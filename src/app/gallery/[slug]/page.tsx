@@ -5,6 +5,7 @@ import Link from "next/link";
 import { artworks, getArtworkBySlug } from "@/data/artworks";
 import { getAllProducts } from "@/data/products";
 import { formatPrice } from "@/lib/format";
+import { site } from "@/lib/site";
 
 export function generateStaticParams() {
   return artworks.map((a) => ({ slug: a.slug }));
@@ -67,7 +68,7 @@ export default async function ArtworkDetailPage({
     artMedium: artwork.medium,
     dateCreated: String(artwork.year),
     image: artwork.image,
-    creator: { "@type": "Person", name: "Layla Haddad" },
+    creator: { "@type": "Person", name: site.artistName },
     ...(artwork.price
       ? {
           offers: {

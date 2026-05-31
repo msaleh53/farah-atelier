@@ -8,7 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://atelier-haddad.com"),
+  metadataBase: new URL("https://farah-ramadan.com"),
   title: {
     default: `${site.name} — Original Paintings & Prints`,
     template: `%s — ${site.name}`,
