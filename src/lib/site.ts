@@ -1,9 +1,9 @@
 export const site = {
   name: "Atelier",
-  artistName: "Layla Haddad",
+  artistName: "Farah Ramadan",
   tagline: "Paintings, works on paper, and objects",
   location: "Amman, Jordan",
-  email: "studio@atelier-haddad.com",
+  email: "studio@farah-ramadan.com",
   instagram: "https://instagram.com",
   description:
     "A premium artist portfolio and shop. Original paintings, limited prints, and commissioned works in a museum-quality presentation.",

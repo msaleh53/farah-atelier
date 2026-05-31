@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://atelier-haddad.com/sitemap.xml",
+    sitemap: "https://farah-ramadan.com/sitemap.xml",
   };
 }

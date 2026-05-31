@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { artworks } from "@/data/artworks";
 
-const BASE_URL = "https://atelier-haddad.com";
+const BASE_URL = "https://farah-ramadan.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = ["", "/gallery", "/shop", "/about", "/contact"].map(
