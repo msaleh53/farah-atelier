@@ -34,3 +34,8 @@ next-env.d.ts
 
 # local claude code settings (personal)
 .claude/settings.local.json
+ 
+# project planning / prd & build-tasks
+artist-website-prd.md
+build-tasks.md
+
