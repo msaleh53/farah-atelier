@@ -5,10 +5,37 @@ import ArtworkCard from "@/components/ArtworkCard";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import { getFeaturedArtworks } from "@/data/artworks";
+import {
+  getSiteSettings,
+  toParagraphs,
+  FALLBACK_ARTIST_PORTRAIT,
+} from "@/data/settings";
+import { urlFor } from "@/sanity/lib/image";
 import { site } from "@/lib/site";
 
+const FALLBACK_HOME_INTRO = `For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.
+
+Every work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.`;
+
 export default async function HomePage() {
-  const featured = (await getFeaturedArtworks()).slice(0, 3);
+  const [featuredAll, settings] = await Promise.all([
+    getFeaturedArtworks(),
+    getSiteSettings(),
+  ]);
+  const featured = featuredAll.slice(0, 3);
+
+  const portraitUrl = settings?.artistPortrait
+    ? urlFor(settings.artistPortrait)
+        .width(900)
+        .height(1125)
+        .fit("crop")
+        .auto("format")
+        .url()
+    : FALLBACK_ARTIST_PORTRAIT;
+  const portraitAlt =
+    settings?.artistPortraitAlt ||
+    `Portrait of the artist ${site.artistName} in the studio.`;
+  const introParagraphs = toParagraphs(settings?.homeIntro || FALLBACK_HOME_INTRO);
 
   return (
     <>
@@ -35,11 +62,14 @@ export default async function HomePage() {
         <div className="container-editorial grid items-center gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-28">
           <div className="relative order-2 aspect-[4/5] overflow-hidden bg-charcoal md:order-1">
             <Image
-              src="https://images.unsplash.com/photo-1531123414780-f74242c2b052?auto=format&fit=crop&w=1200&q=80"
-              alt={`Portrait of the artist ${site.artistName} in the studio.`}
+              src={portraitUrl}
+              alt={portraitAlt}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
+              {...(settings?.artistPortraitLqip
+                ? { placeholder: "blur", blurDataURL: settings.artistPortraitLqip }
+                : {})}
             />
           </div>
           <div className="order-1 md:order-2">
@@ -48,17 +78,9 @@ export default async function HomePage() {
               {site.artistName}
             </h2>
             <div className="mt-6 space-y-4 font-body text-base leading-relaxed text-canvas/70">
-              <p>
-                For two decades I have painted the thresholds of the Jordanian
-                landscape — the moment a colour turns, the line where dune meets
-                sky. My work moves between oil, ink and clay, but always returns
-                to restraint: the fewest marks that still hold a feeling.
-              </p>
-              <p>
-                Every work leaves the studio through conversation. I prefer to
-                know where a painting is going, so each acquisition begins with a
-                simple inquiry rather than a checkout.
-              </p>
+              {introParagraphs.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
