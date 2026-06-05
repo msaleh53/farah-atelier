@@ -230,6 +230,16 @@ const products: ProductSeed[] = [
 async function seed() {
   const tx = client.transaction()
 
+  // Site Settings singleton — createIfNotExists so re-seeding never clobbers
+  // hero text/image that Farah has customized in the Studio.
+  tx.createIfNotExists({
+    _id: 'siteSettings',
+    _type: 'siteSettings',
+    heroHeadline: 'Quiet paintings for considered spaces.',
+    heroSubtitle:
+      'Farah Ramadan works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.',
+  })
+
   for (const a of artworks) {
     tx.createOrReplace({
       _id: `artwork-${a.slug}`,
@@ -273,7 +283,7 @@ async function seed() {
 
   const result = await tx.commit()
   console.log(
-    `✅ Seeded ${artworks.length} artworks + ${products.length} products ` +
+    `✅ Seeded site settings + ${artworks.length} artworks + ${products.length} products ` +
       `(${result.results.length} documents written).`
   )
   console.log('⚠️  Images still need uploading per document in the Studio.')
