@@ -43,3 +43,9 @@ next-env.d.ts
 artist-website-prd.md
 build-tasks.md
 
+# iCloud/Dropbox sync conflict copies (e.g. "seed 2.ts", ".gitignore 2")
+* 2.*
+* [0-9].*
+*\ 2
+*.sync-conflict-*
+
