@@ -7,8 +7,8 @@ import Reveal from "@/components/Reveal";
 import { getFeaturedArtworks } from "@/data/artworks";
 import { site } from "@/lib/site";
 
-export default function HomePage() {
-  const featured = getFeaturedArtworks().slice(0, 3);
+export default async function HomePage() {
+  const featured = (await getFeaturedArtworks()).slice(0, 3);
 
   return (
     <>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { getArtworkBySlug } from "@/data/artworks";
+import type { Artwork } from "@/types";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/format";
 import InquiryForm from "@/components/InquiryForm";
@@ -10,7 +10,11 @@ import CommissionForm from "@/components/CommissionForm";
 
 type Tab = "inquiry" | "commission";
 
-export default function ContactView() {
+export default function ContactView({
+  prefillArtwork,
+}: {
+  prefillArtwork?: Artwork | null;
+}) {
   const searchParams = useSearchParams();
   const { items, subtotal } = useCart();
   const [tab, setTab] = useState<Tab>("inquiry");
@@ -20,14 +24,11 @@ export default function ContactView() {
 
   // Build prefilled subject/message from the incoming context.
   const { defaultSubject, defaultMessage } = useMemo(() => {
-    if (artworkSlug) {
-      const art = getArtworkBySlug(artworkSlug);
-      if (art) {
-        return {
-          defaultSubject: `${art.title} (${art.year})`,
-          defaultMessage: `I'd like to inquire about "${art.title}" — ${art.medium}, ${art.dimensions}.\n\n`,
-        };
-      }
+    if (prefillArtwork) {
+      return {
+        defaultSubject: `${prefillArtwork.title} (${prefillArtwork.year})`,
+        defaultMessage: `I'd like to inquire about "${prefillArtwork.title}" — ${prefillArtwork.medium}, ${prefillArtwork.dimensions}.\n\n`,
+      };
     }
     if (isCartInquiry && items.length > 0) {
       const lines = items
@@ -46,7 +47,7 @@ export default function ContactView() {
       };
     }
     return { defaultSubject: "", defaultMessage: "" };
-  }, [artworkSlug, isCartInquiry, items, subtotal]);
+  }, [prefillArtwork, isCartInquiry, items, subtotal]);
 
   // If arriving from a work or cart, default to the inquiry tab.
   useEffect(() => {

@@ -6,12 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "studio:dev": "sanity dev",
+    "studio:deploy": "sanity deploy",
+    "seed": "sanity exec scripts/seed.ts --with-user-token"
   },
   "dependencies": {
-    "next": "15.1.6",
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^3.89.0",
+    "next": "^15.5.19",
+    "next-sanity": "^13.0.11",
+    "react": "^19.3.0-canary-43bcbf80-20260603",
+    "react-dom": "^19.3.0-canary-43bcbf80-20260603",
+    "sanity": "^5.30.0",
+    "styled-components": "^6.4.2"
   },
   "devDependencies": {
     "@types/node": "^20",

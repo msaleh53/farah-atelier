@@ -9,8 +9,8 @@ export const metadata: Metadata = {
     "Browse original paintings, works on paper, mixed media and sculpture. Filter by category and availability.",
 };
 
-export default function GalleryPage() {
-  const artworks = getAllArtworks();
+export default async function GalleryPage() {
+  const artworks = await getAllArtworks();
 
   return (
     <>
