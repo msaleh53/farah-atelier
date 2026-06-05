@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { artworks, getArtworkBySlug } from "@/data/artworks";
+import { getArtworkBySlug, getArtworkSlugs } from "@/data/artworks";
 import { getAllProducts } from "@/data/products";
 import { formatPrice } from "@/lib/format";
 import { site } from "@/lib/site";
 
-export function generateStaticParams() {
-  return artworks.map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  const slugs = await getArtworkSlugs()
+  return slugs.map((a) => ({ slug: a.slug }))
 }
 
 export async function generateMetadata({
@@ -17,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = await getArtworkBySlug(slug);
   if (!artwork) return { title: "Work not found" };
 
   return {
@@ -42,10 +43,10 @@ export default async function ArtworkDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const artwork = getArtworkBySlug(slug);
+  const artwork = await getArtworkBySlug(slug);
   if (!artwork) notFound();
 
-  const relatedPrint = getAllProducts().find(
+  const relatedPrint = (await getAllProducts()).find(
     (p) => p.artworkSlug === artwork.slug && p.type !== "Original",
   );
 

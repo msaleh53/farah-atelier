@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import PageHeader from "@/components/PageHeader";
 import ContactView from "@/components/ContactView";
+import { getArtworkBySlug } from "@/data/artworks";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -10,7 +11,16 @@ export const metadata: Metadata = {
     "Inquire about a work or commission an original. The studio responds to every message within two business days.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ artwork?: string; inquiry?: string; type?: string }>;
+}) {
+  const params = await searchParams;
+  const prefillArtwork = params.artwork
+    ? await getArtworkBySlug(params.artwork)
+    : null;
+
   return (
     <>
       <PageHeader
@@ -25,7 +35,7 @@ export default function ContactPage() {
             <p className="font-body text-sm text-label-gray">Loading form…</p>
           }
         >
-          <ContactView />
+          <ContactView prefillArtwork={prefillArtwork} />
         </Suspense>
 
         <aside className="lg:border-l lg:border-charcoal/10 lg:pl-12">

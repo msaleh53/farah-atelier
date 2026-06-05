@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
-import { artworks } from "@/data/artworks";
+import { getArtworkSlugs } from "@/data/artworks";
 
 const BASE_URL = "https://farah-ramadan.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = ["", "/gallery", "/shop", "/about", "/contact"].map(
     (path) => ({
       url: `${BASE_URL}${path}`,
@@ -13,7 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  const artworkRoutes = artworks.map((a) => ({
+  const slugs = await getArtworkSlugs();
+  const artworkRoutes = slugs.map((a) => ({
     url: `${BASE_URL}/gallery/${a.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,

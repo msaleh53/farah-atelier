@@ -15,8 +15,8 @@ const steps = [
   { n: "03", t: "Studio confirms", d: "We verify availability and arrange the sale and delivery." },
 ];
 
-export default function ShopPage() {
-  const products = getAllProducts();
+export default async function ShopPage() {
+  const products = await getAllProducts();
 
   return (
     <>
