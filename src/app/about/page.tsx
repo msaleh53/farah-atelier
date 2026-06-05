@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+import {
+  getSiteSettings,
+  toParagraphs,
+  FALLBACK_ARTIST_PORTRAIT,
+  type TimelineItem,
+} from "@/data/settings";
+import { urlFor } from "@/sanity/lib/image";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -9,14 +16,42 @@ export const metadata: Metadata = {
   description: `About ${site.artistName} — studio practice, materials, and approach to inquiry-first acquisition in ${site.location}.`,
 };
 
-const timeline = [
+const FALLBACK_LEAD =
+  "I make quiet work about the light and geology of Jordan — paintings, drawings and objects that ask to be lived with slowly.";
+
+const FALLBACK_BODY = `My practice moves between oil, ink and clay, but it is held together by restraint: the fewest marks that still carry a feeling. I work in long looking sessions, often returning to the same ridge, the same tide, until a single gesture holds it.
+
+Materials matter. Sand from Wadi Rum is bound into the mixed-media panels; wood ash glazes the vessels; the works on paper are made in the field, drying in the sun. The landscape is not only the subject but, often, the medium.
+
+I prefer to know where a work is going. That is why everything leaves the studio through conversation rather than a checkout — an inquiry-first approach that lets each acquisition begin with care.`;
+
+const FALLBACK_TIMELINE: TimelineItem[] = [
   { year: "2003", text: "Begins formal study in painting and printmaking." },
   { year: "2011", text: "First solo exhibition of works on paper in Amman." },
   { year: "2018", text: "Expands the practice into clay and mixed media." },
   { year: "2024", text: "Opens the studio for direct, inquiry-first acquisition." },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getSiteSettings();
+
+  const portraitUrl = settings?.artistPortrait
+    ? urlFor(settings.artistPortrait)
+        .width(1000)
+        .height(1250)
+        .fit("crop")
+        .auto("format")
+        .url()
+    : FALLBACK_ARTIST_PORTRAIT;
+  const portraitAlt =
+    settings?.artistPortraitAlt || `${site.artistName} working in the studio.`;
+  const lead = settings?.aboutLead || FALLBACK_LEAD;
+  const bodyParagraphs = toParagraphs(settings?.aboutBody || FALLBACK_BODY);
+  const timeline =
+    settings?.timeline && settings.timeline.length > 0
+      ? settings.timeline
+      : FALLBACK_TIMELINE;
+
   return (
     <>
       <PageHeader eyebrow="The artist" title={site.artistName} />
@@ -24,37 +59,25 @@ export default function AboutPage() {
       <section className="container-editorial grid gap-12 pb-8 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
         <div className="relative aspect-[4/5] overflow-hidden bg-parchment">
           <Image
-            src="https://images.unsplash.com/photo-1531123414780-f74242c2b052?auto=format&fit=crop&w=1200&q=80"
-            alt={`${site.artistName} working in the studio.`}
+            src={portraitUrl}
+            alt={portraitAlt}
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 45vw"
             className="object-cover"
+            {...(settings?.artistPortraitLqip
+              ? { placeholder: "blur", blurDataURL: settings.artistPortraitLqip }
+              : {})}
           />
         </div>
 
         <div className="space-y-5 font-body text-base leading-relaxed text-charcoal/80">
           <p className="font-heading text-2xl font-light leading-snug text-charcoal">
-            I make quiet work about the light and geology of Jordan — paintings,
-            drawings and objects that ask to be lived with slowly.
+            {lead}
           </p>
-          <p>
-            My practice moves between oil, ink and clay, but it is held together
-            by restraint: the fewest marks that still carry a feeling. I work in
-            long looking sessions, often returning to the same ridge, the same
-            tide, until a single gesture holds it.
-          </p>
-          <p>
-            Materials matter. Sand from Wadi Rum is bound into the mixed-media
-            panels; wood ash glazes the vessels; the works on paper are made in
-            the field, drying in the sun. The landscape is not only the subject
-            but, often, the medium.
-          </p>
-          <p>
-            I prefer to know where a work is going. That is why everything leaves
-            the studio through conversation rather than a checkout — an
-            inquiry-first approach that lets each acquisition begin with care.
-          </p>
+          {bodyParagraphs.map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
         </div>
       </section>
 
@@ -64,9 +87,9 @@ export default function AboutPage() {
           Selected timeline
         </h2>
         <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-          {timeline.map((t) => (
+          {timeline.map((t, i) => (
             <li
-              key={t.year}
+              key={`${t.year}-${i}`}
               className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
             >
               <span className="font-heading text-2xl text-ochre">{t.year}</span>

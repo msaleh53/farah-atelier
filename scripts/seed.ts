@@ -5,8 +5,10 @@
  * (which calls `sanity exec scripts/seed.ts --with-user-token`, authenticating
  *  with your logged-in Sanity user — no API token needed.)
  *
- * Idempotent: uses deterministic _ids (artwork-<slug> / product-<slug>) and
- * createOrReplace, so re-running updates rather than duplicates.
+ * Non-destructive: uses deterministic _ids (artwork-<slug> / product-<slug>)
+ * with createIfNotExists, and setIfMissing for site settings fields. Re-running
+ * only fills in what's missing — it never overwrites edits or images that have
+ * been added in the Studio.
  *
  * NOTE: images are intentionally omitted — the originals were Unsplash
  * placeholders. Documents will show a "required image" warning in the Studio
@@ -230,18 +232,31 @@ const products: ProductSeed[] = [
 async function seed() {
   const tx = client.transaction()
 
-  // Site Settings singleton — createIfNotExists so re-seeding never clobbers
-  // hero text/image that Farah has customized in the Studio.
-  tx.createIfNotExists({
-    _id: 'siteSettings',
-    _type: 'siteSettings',
-    heroHeadline: 'Quiet paintings for considered spaces.',
-    heroSubtitle:
-      'Farah Ramadan works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.',
-  })
+  // Site Settings singleton — ensure it exists, then setIfMissing each field so
+  // re-seeding adds new fields without clobbering anything Farah has customized.
+  tx.createIfNotExists({ _id: 'siteSettings', _type: 'siteSettings' })
+  tx.patch('siteSettings', (p) =>
+    p.setIfMissing({
+      heroHeadline: 'Quiet paintings for considered spaces.',
+      heroSubtitle:
+        'Farah Ramadan works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.',
+      homeIntro:
+        'For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.\n\nEvery work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.',
+      aboutLead:
+        'I make quiet work about the light and geology of Jordan — paintings, drawings and objects that ask to be lived with slowly.',
+      aboutBody:
+        'My practice moves between oil, ink and clay, but it is held together by restraint: the fewest marks that still carry a feeling. I work in long looking sessions, often returning to the same ridge, the same tide, until a single gesture holds it.\n\nMaterials matter. Sand from Wadi Rum is bound into the mixed-media panels; wood ash glazes the vessels; the works on paper are made in the field, drying in the sun. The landscape is not only the subject but, often, the medium.\n\nI prefer to know where a work is going. That is why everything leaves the studio through conversation rather than a checkout — an inquiry-first approach that lets each acquisition begin with care.',
+      timeline: [
+        { _key: 'm2003', year: '2003', text: 'Begins formal study in painting and printmaking.' },
+        { _key: 'm2011', year: '2011', text: 'First solo exhibition of works on paper in Amman.' },
+        { _key: 'm2018', year: '2018', text: 'Expands the practice into clay and mixed media.' },
+        { _key: 'm2024', year: '2024', text: 'Opens the studio for direct, inquiry-first acquisition.' },
+      ],
+    })
+  )
 
   for (const a of artworks) {
-    tx.createOrReplace({
+    tx.createIfNotExists({
       _id: `artwork-${a.slug}`,
       _type: 'artwork',
       title: a.title,
@@ -260,7 +275,7 @@ async function seed() {
   }
 
   for (const p of products) {
-    tx.createOrReplace({
+    tx.createIfNotExists({
       _id: `product-${p.slug}`,
       _type: 'product',
       title: p.title,
