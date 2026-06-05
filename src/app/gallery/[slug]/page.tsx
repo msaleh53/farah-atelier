@@ -21,12 +21,21 @@ export async function generateMetadata({
   const artwork = await getArtworkBySlug(slug);
   if (!artwork) return { title: "Work not found" };
 
+  const detail = [artwork.medium, artwork.dimensions].filter(Boolean).join(", ");
+  const description = [
+    `${artwork.title} (${artwork.year})`,
+    detail,
+    artwork.story ? `${artwork.story.slice(0, 120)}…` : "",
+  ]
+    .filter(Boolean)
+    .join(" — ");
+
   return {
     title: artwork.title,
-    description: `${artwork.title} (${artwork.year}) — ${artwork.medium}, ${artwork.dimensions}. ${artwork.story.slice(0, 120)}…`,
+    description,
     openGraph: {
       title: artwork.title,
-      images: [{ url: artwork.image }],
+      ...(artwork.image ? { images: [{ url: artwork.image }] } : {}),
     },
   };
 }
@@ -59,7 +68,7 @@ export default async function ArtworkDetailPage({
       label: "Price",
       value: artwork.price ? `${formatPrice(artwork.price)} (indicative)` : "On request",
     },
-  ];
+  ].filter((row) => Boolean(row.value));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -68,7 +77,7 @@ export default async function ArtworkDetailPage({
     artform: artwork.category,
     artMedium: artwork.medium,
     dateCreated: String(artwork.year),
-    image: artwork.image,
+    ...(artwork.image ? { image: artwork.image } : {}),
     creator: { "@type": "Person", name: site.artistName },
     ...(artwork.price
       ? {
@@ -103,14 +112,22 @@ export default async function ArtworkDetailPage({
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         {/* Image */}
         <div className="relative aspect-[4/5] overflow-hidden bg-parchment">
-          <Image
-            src={artwork.image}
-            alt={artwork.imageAlt}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 60vw"
-            className="object-cover"
-          />
+          {artwork.image ? (
+            <Image
+              src={artwork.image}
+              alt={artwork.imageAlt}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 60vw"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="font-body text-xs uppercase tracking-[0.2em] text-label-gray">
+                Image coming soon
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Details */}
@@ -160,15 +177,17 @@ export default async function ArtworkDetailPage({
       </div>
 
       {/* Story */}
-      <section className="mx-auto mt-20 max-w-2xl border-t border-charcoal/10 pt-12">
-        <p className="eyebrow mb-4">The work</p>
-        <h2 className="font-heading text-2xl font-light text-charcoal">
-          On {artwork.title}
-        </h2>
-        <p className="mt-5 font-body text-lg leading-relaxed text-charcoal/80">
-          {artwork.story}
-        </p>
-      </section>
+      {artwork.story ? (
+        <section className="mx-auto mt-20 max-w-2xl border-t border-charcoal/10 pt-12">
+          <p className="eyebrow mb-4">The work</p>
+          <h2 className="font-heading text-2xl font-light text-charcoal">
+            On {artwork.title}
+          </h2>
+          <p className="mt-5 font-body text-lg leading-relaxed text-charcoal/80">
+            {artwork.story}
+          </p>
+        </section>
+      ) : null}
     </article>
   );
 }
