@@ -1,16 +1,21 @@
+import type { SanityImageSource } from '@sanity/image-url'
 import { sanityFetch } from '@/sanity/lib/live'
 
 export interface SiteSettings {
   heroHeadline: string | null
   heroSubtitle: string | null
-  heroImage: string | null
+  /** Raw Sanity image object (asset ref + hotspot + crop) for urlFor(). */
+  heroImage: SanityImageSource | null
+  /** Low-quality blur placeholder, queried separately from the asset metadata. */
+  heroImageLqip: string | null
   heroImageAlt: string | null
 }
 
 const SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   heroHeadline,
   heroSubtitle,
-  "heroImage": heroImage.asset->url,
+  heroImage,
+  "heroImageLqip": heroImage.asset->metadata.lqip,
   heroImageAlt
 }`
 
