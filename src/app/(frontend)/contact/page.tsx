@@ -3,13 +3,15 @@ import { Suspense } from "react";
 import PageHeader from "@/components/PageHeader";
 import ContactView from "@/components/ContactView";
 import { getArtworkBySlug } from "@/data/artworks";
-import { site } from "@/lib/site";
+import { getSiteContent } from "@/data/settings";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Inquire about a work or commission an original. The studio responds to every message within two business days.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSiteContent();
+  return {
+    title: "Contact",
+    description: `Inquire about a work or commission an original. The studio responds to every message ${content.contact.responseTime.toLowerCase()}.`,
+  };
+}
 
 export default async function ContactPage({
   searchParams,
@@ -17,16 +19,17 @@ export default async function ContactPage({
   searchParams: Promise<{ artwork?: string; inquiry?: string; type?: string }>;
 }) {
   const params = await searchParams;
-  const prefillArtwork = params.artwork
-    ? await getArtworkBySlug(params.artwork)
-    : null;
+  const [prefillArtwork, content] = await Promise.all([
+    params.artwork ? getArtworkBySlug(params.artwork) : null,
+    getSiteContent(),
+  ]);
 
   return (
     <>
       <PageHeader
-        eyebrow="Begin a conversation"
+        eyebrow={content.contact.eyebrow}
         title="Contact"
-        intro="Whether you have your eye on a particular piece or want something made for your space, every conversation starts here."
+        intro={content.contact.intro}
       />
 
       <section className="container-editorial grid gap-12 pb-16 lg:grid-cols-[1.6fr_1fr] lg:gap-20">
@@ -45,25 +48,24 @@ export default async function ContactPage({
               <dt className="text-label-gray">Email</dt>
               <dd className="mt-1">
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${content.email}`}
                   className="link-underline text-charcoal"
                 >
-                  {site.email}
+                  {content.email}
                 </a>
               </dd>
             </div>
             <div>
               <dt className="text-label-gray">Location</dt>
-              <dd className="mt-1 text-charcoal">{site.location}</dd>
+              <dd className="mt-1 text-charcoal">{content.location}</dd>
             </div>
             <div>
               <dt className="text-label-gray">Response time</dt>
-              <dd className="mt-1 text-charcoal">Within two business days</dd>
+              <dd className="mt-1 text-charcoal">{content.contact.responseTime}</dd>
             </div>
           </dl>
           <p className="mt-8 font-body text-xs leading-relaxed text-label-gray">
-            Studio visits are available by appointment. Mention your preferred
-            dates in your message and we will arrange a time.
+            {content.contact.note}
           </p>
         </aside>
       </section>

@@ -541,6 +541,34 @@ export interface SiteSetting {
       }[]
     | null;
   /**
+   * Wordmark in the header & footer. Default: Atelier.
+   */
+  brandName?: string | null;
+  tagline?: string | null;
+  location?: string | null;
+  email?: string | null;
+  instagram?: string | null;
+  /**
+   * Used as the site-wide search/social description.
+   */
+  seoDescription?: string | null;
+  galleryEyebrow?: string | null;
+  galleryIntro?: string | null;
+  shopEyebrow?: string | null;
+  shopIntro?: string | null;
+  contactEyebrow?: string | null;
+  contactIntro?: string | null;
+  contactResponseTime?: string | null;
+  /**
+   * The fine print under the contact details.
+   */
+  contactNote?: string | null;
+  homeFeaturedEyebrow?: string | null;
+  homeFeaturedTitle?: string | null;
+  homeClosingEyebrow?: string | null;
+  homeClosingHeading?: string | null;
+  aboutCtaHeading?: string | null;
+  /**
    * Shown on the home page intro and the About page.
    */
   artistPortrait?: (number | null) | Media;
@@ -567,6 +595,25 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  brandName?: T;
+  tagline?: T;
+  location?: T;
+  email?: T;
+  instagram?: T;
+  seoDescription?: T;
+  galleryEyebrow?: T;
+  galleryIntro?: T;
+  shopEyebrow?: T;
+  shopIntro?: T;
+  contactEyebrow?: T;
+  contactIntro?: T;
+  contactResponseTime?: T;
+  contactNote?: T;
+  homeFeaturedEyebrow?: T;
+  homeFeaturedTitle?: T;
+  homeClosingEyebrow?: T;
+  homeClosingHeading?: T;
+  aboutCtaHeading?: T;
   artistPortrait?: T;
   artistPortraitAlt?: T;
   updatedAt?: T;

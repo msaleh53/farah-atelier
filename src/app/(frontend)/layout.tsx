@@ -1,52 +1,59 @@
 import type { Metadata, Viewport } from "next";
 import { cormorant, inter } from "@/lib/fonts";
 import { site } from "@/lib/site";
+import { getSiteContent } from "@/data/settings";
 import { CartProvider } from "@/lib/cart-context";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import "@/styles/globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://farah-ramadan.com"),
-  title: {
-    default: `${site.name} — Original Paintings & Prints`,
-    template: `%s — ${site.name}`,
-  },
-  description: site.description,
-  openGraph: {
-    title: `${site.name} — Original Paintings & Prints`,
-    description: site.description,
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSiteContent();
+  const title = `${content.brandName} — Original Paintings & Prints`;
+  return {
+    metadataBase: new URL("https://farah-ramadan.com"),
+    title: {
+      default: title,
+      template: `%s — ${content.brandName}`,
+    },
+    description: content.seoDescription,
+    openGraph: {
+      title,
+      description: content.seoDescription,
+      type: "website",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#F4F1EA",
   colorScheme: "light",
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "VisualArtsEvent",
-  name: site.name,
-  description: site.description,
-  organizer: {
-    "@type": "Person",
-    name: site.artistName,
-    email: site.email,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: site.location,
-    },
-  },
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const content = await getSiteContent();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VisualArtsEvent",
+    name: content.brandName,
+    description: content.seoDescription,
+    organizer: {
+      "@type": "Person",
+      name: site.artistName,
+      email: content.email,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: content.location,
+      },
+    },
+  };
+
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="flex min-h-screen flex-col">
@@ -61,7 +68,7 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <Navbar />
+          <Navbar brandName={content.brandName} />
           <main id="main" className="flex-1">
             {children}
           </main>

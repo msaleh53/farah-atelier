@@ -81,6 +81,47 @@ export const SiteSettings: GlobalConfig = {
             },
           ],
         },
+        {
+          label: 'Studio & contact',
+          description:
+            'Brand, contact details and SEO blurb. Shown in the footer, contact page and search results.',
+          fields: [
+            { name: 'brandName', type: 'text', admin: { description: 'Wordmark in the header & footer. Default: Atelier.' } },
+            { name: 'tagline', type: 'text' },
+            { name: 'location', type: 'text', admin: { placeholder: 'Amman, Jordan' } },
+            { name: 'email', type: 'email' },
+            { name: 'instagram', type: 'text', label: 'Instagram URL' },
+            {
+              name: 'seoDescription',
+              type: 'textarea',
+              label: 'Default SEO description',
+              admin: { description: 'Used as the site-wide search/social description.' },
+            },
+          ],
+        },
+        {
+          label: 'Page intros',
+          description: 'The eyebrow + intro paragraph at the top of each page, and the home/about call-to-action headings.',
+          fields: [
+            { name: 'galleryEyebrow', type: 'text' },
+            { name: 'galleryIntro', type: 'textarea' },
+            { name: 'shopEyebrow', type: 'text' },
+            { name: 'shopIntro', type: 'textarea' },
+            { name: 'contactEyebrow', type: 'text' },
+            { name: 'contactIntro', type: 'textarea' },
+            {
+              name: 'contactResponseTime',
+              type: 'text',
+              admin: { placeholder: 'Within two business days' },
+            },
+            { name: 'contactNote', type: 'textarea', admin: { description: 'The fine print under the contact details.' } },
+            { name: 'homeFeaturedEyebrow', type: 'text', admin: { placeholder: 'Selected works' } },
+            { name: 'homeFeaturedTitle', type: 'text', admin: { placeholder: 'Featured' } },
+            { name: 'homeClosingEyebrow', type: 'text', admin: { placeholder: 'Acquire a work' } },
+            { name: 'homeClosingHeading', type: 'textarea' },
+            { name: 'aboutCtaHeading', type: 'textarea' },
+          ],
+        },
       ],
     },
     // Shared artist portrait (home intro + about). Kept outside the tabs so it's

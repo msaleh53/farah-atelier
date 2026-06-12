@@ -4,16 +4,20 @@ import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
 import {
   getSiteSettings,
+  getSiteContent,
   toParagraphs,
   FALLBACK_ARTIST_PORTRAIT,
   type TimelineItem,
 } from "@/data/settings";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: `About ${site.artistName} — studio practice, materials, and approach to inquiry-first acquisition in ${site.location}.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSiteContent();
+  return {
+    title: "About",
+    description: `About ${site.artistName} — studio practice, materials, and approach to inquiry-first acquisition in ${content.location}.`,
+  };
+}
 
 const FALLBACK_LEAD =
   "I make quiet work about the light and geology of Jordan — paintings, drawings and objects that ask to be lived with slowly.";
@@ -32,7 +36,10 @@ const FALLBACK_TIMELINE: TimelineItem[] = [
 ];
 
 export default async function AboutPage() {
-  const settings = await getSiteSettings();
+  const [settings, content] = await Promise.all([
+    getSiteSettings(),
+    getSiteContent(),
+  ]);
 
   const portraitUrl = settings?.artistPortrait ?? FALLBACK_ARTIST_PORTRAIT;
   const portraitAlt =
@@ -94,7 +101,7 @@ export default async function AboutPage() {
       <section className="bg-pigment text-canvas">
         <div className="container-editorial flex flex-col items-center gap-6 py-20 text-center">
           <h2 className="max-w-2xl font-heading text-4xl font-light leading-tight">
-            Find a work for your space, or imagine one together.
+            {content.about.ctaHeading}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/gallery" className="btn-primary">

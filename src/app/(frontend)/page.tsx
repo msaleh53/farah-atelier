@@ -7,6 +7,7 @@ import Reveal from "@/components/Reveal";
 import { getFeaturedArtworks } from "@/data/artworks";
 import {
   getSiteSettings,
+  getSiteContent,
   toParagraphs,
   FALLBACK_ARTIST_PORTRAIT,
 } from "@/data/settings";
@@ -17,9 +18,10 @@ const FALLBACK_HOME_INTRO = `For two decades I have painted the thresholds of th
 Every work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.`;
 
 export default async function HomePage() {
-  const [featuredAll, settings] = await Promise.all([
+  const [featuredAll, settings, content] = await Promise.all([
     getFeaturedArtworks(),
     getSiteSettings(),
+    getSiteContent(),
   ]);
   const featured = featuredAll.slice(0, 3);
 
@@ -36,8 +38,8 @@ export default async function HomePage() {
       {/* Featured works */}
       <section className="container-editorial py-16 md:py-24">
         <SectionHeading
-          eyebrow="Selected works"
-          title="Featured"
+          eyebrow={content.home.featuredEyebrow}
+          title={content.home.featuredTitle}
           link={{ href: "/gallery", label: "All works" }}
         />
         <ul className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -86,9 +88,9 @@ export default async function HomePage() {
       {/* Closing CTA */}
       <section className="container-editorial py-20 text-center md:py-28">
         <Reveal>
-          <p className="eyebrow mb-5">Acquire a work</p>
+          <p className="eyebrow mb-5">{content.home.closingEyebrow}</p>
           <h2 className="mx-auto max-w-2xl font-heading text-4xl font-light leading-tight text-charcoal sm:text-5xl">
-            Begin a quiet conversation about bringing a piece home.
+            {content.home.closingHeading}
           </h2>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link href="/shop" className="btn-primary">

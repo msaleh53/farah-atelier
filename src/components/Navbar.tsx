@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { navLinks, site } from "@/lib/site";
 import { useCart } from "@/lib/cart-context";
 
-export default function Navbar() {
+export default function Navbar({ brandName = site.name }: { brandName?: string }) {
   const pathname = usePathname();
   const { count, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
@@ -43,7 +43,7 @@ export default function Navbar() {
           href="/"
           className="font-heading text-2xl tracking-wide text-charcoal"
         >
-          {site.name}
+          {brandName}
         </Link>
 
         {/* Desktop links */}

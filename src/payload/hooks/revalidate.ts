@@ -43,8 +43,13 @@ export const revalidateProductDelete: CollectionAfterDeleteHook = ({ doc }) => {
   return doc
 }
 
-/** Site Settings feeds the home hero/intro and the About page. */
+/**
+ * Site Settings feeds the hero/about content AND site-wide chrome (footer,
+ * navbar, SEO) plus every page's intro copy — so refresh the whole frontend.
+ */
 export const revalidateSettings: GlobalAfterChangeHook = ({ doc }) => {
-  revalidate(['/', '/about'])
+  revalidate(['/', '/gallery', '/shop', '/about', '/contact'], {
+    route: '/gallery/[slug]',
+  })
   return doc
 }

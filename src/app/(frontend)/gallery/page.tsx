@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import GalleryView from "@/components/GalleryView";
 import { getAllArtworks } from "@/data/artworks";
+import { getSiteContent } from "@/data/settings";
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -10,14 +11,17 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const artworks = await getAllArtworks();
+  const [artworks, content] = await Promise.all([
+    getAllArtworks(),
+    getSiteContent(),
+  ]);
 
   return (
     <>
       <PageHeader
-        eyebrow="The collection"
+        eyebrow={content.gallery.eyebrow}
         title="Gallery"
-        intro="A continuously evolving body of work. Filter by medium or availability; select any piece to read its story and begin an inquiry."
+        intro={content.gallery.intro}
       />
       <section className="container-editorial pb-8">
         <GalleryView artworks={artworks} />

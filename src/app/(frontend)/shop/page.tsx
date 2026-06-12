@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import ProductCard from "@/components/ProductCard";
 import { getAllProducts } from "@/data/products";
+import { getSiteContent } from "@/data/settings";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -16,14 +17,17 @@ const steps = [
 ];
 
 export default async function ShopPage() {
-  const products = await getAllProducts();
+  const [products, content] = await Promise.all([
+    getAllProducts(),
+    getSiteContent(),
+  ]);
 
   return (
     <>
       <PageHeader
-        eyebrow="Prints & originals"
+        eyebrow={content.shop.eyebrow}
         title="Shop"
-        intro="Acquisition here is inquiry-first. Build a list of works, request them, and the studio will personally confirm availability and arrange payment and delivery."
+        intro={content.shop.intro}
       />
 
       {/* How it works */}
