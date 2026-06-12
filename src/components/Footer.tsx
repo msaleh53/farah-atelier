@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { navLinks, site } from "@/lib/site";
+import { getSiteContent } from "@/data/settings";
 
-export default function Footer() {
+export default async function Footer() {
+  const content = await getSiteContent();
   const year = new Date().getFullYear();
 
   return (
     <footer className="mt-24 border-t border-charcoal/10 bg-parchment">
       <div className="container-editorial grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <p className="font-heading text-2xl text-charcoal">{site.name}</p>
+          <p className="font-heading text-2xl text-charcoal">{content.brandName}</p>
           <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-label-gray">
-            {site.tagline}. Studio practice based in {site.location}.
+            {content.tagline}. Studio practice based in {content.location}.
           </p>
         </div>
 
@@ -34,13 +36,13 @@ export default function Footer() {
           <p className="eyebrow mb-4">Studio</p>
           <ul className="space-y-2.5 font-body text-sm text-charcoal">
             <li>
-              <a href={`mailto:${site.email}`} className="link-underline">
-                {site.email}
+              <a href={`mailto:${content.email}`} className="link-underline">
+                {content.email}
               </a>
             </li>
             <li>
               <a
-                href={site.instagram}
+                href={content.instagram}
                 target="_blank"
                 rel="noreferrer"
                 className="link-underline"
@@ -48,7 +50,7 @@ export default function Footer() {
                 Instagram
               </a>
             </li>
-            <li className="text-label-gray">{site.location}</li>
+            <li className="text-label-gray">{content.location}</li>
           </ul>
         </div>
       </div>
@@ -58,7 +60,7 @@ export default function Footer() {
           <p>
             © {year} {site.artistName}. All rights reserved.
           </p>
-          <p className="uppercase tracking-[0.2em]">{site.tagline}</p>
+          <p className="uppercase tracking-[0.2em]">{content.tagline}</p>
         </div>
       </div>
     </footer>

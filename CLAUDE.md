@@ -5,23 +5,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # dev server with hot reload (auto-picks 3001 if 3000 is taken)
-npm run build    # production build — also the fastest way to typecheck + catch prerender errors
-npm run start    # serve the production build
-npm run lint     # eslint (next/core-web-vitals)
+npm run dev            # dev server with hot reload (auto-picks 3001 if 3000 is taken)
+npm run build          # production build — also the fastest way to typecheck + catch prerender errors
+npm run start          # serve the production build
+npm run lint           # eslint (next/core-web-vitals)
+npm run seed           # idempotently seed Payload with the 8 artworks + 6 products + Site Settings text
+npm run generate:types # regenerate payload-types.ts after schema changes
 ```
 
-There is no test suite. Treat `npm run build` as the gate: it typechecks all routes and statically prerenders every page (including the 8 artwork detail pages), so a clean build catches most regressions.
+There is no test suite. Treat `npm run build` as the gate: it typechecks all routes and statically prerenders every page (including the 8 artwork detail pages), so a clean build catches most regressions. **Both build and the Payload CLI scripts require a reachable `DATABASE_URL` (Postgres) and `PAYLOAD_SECRET` in `.env.local`.**
+
+**Toolchain pins:** the project is ESM (`"type": "module"` in package.json) and pinned to **Node 22** and **Next 15.4.x** — Payload's latest does not support Next 15.5, and its CLI (tsx) breaks on Node 24. Use Node 22 (`.nvmrc`).
 
 ## Architecture
 
 Next.js 15 App Router site for an artist portfolio + inquiry-first shop. TypeScript, Tailwind, `next/image`. Path alias `@/*` → `src/*`.
 
-**Data is local, not a CMS.** All content lives in typed modules under `src/data/` (`artworks.ts`, `products.ts`) with query helpers (`getFeaturedArtworks`, `getArtworkBySlug`, etc.). Pages and `generateStaticParams` import these directly. The domain types in `src/types/index.ts` are the contract — change them there first. Swapping in Sanity later means replacing the `src/data/` helpers, not the components.
+**Content comes from Payload CMS (self-hosted, in-app).** Payload 3 runs *inside* this Next app — admin at `/admin`, REST/media under `/api`, both mounted from the `src/app/(payload)/` route group (the public site lives in the parallel `src/app/(frontend)/` group; there is no top-level `app/layout.tsx`). Config: `payload.config.ts` → `src/payload/collections/` (`Users`, `Media`, `Artworks`, `Products`) + `src/payload/globals/SiteSettings.ts`. Postgres via `@payloadcms/db-postgres`; uploads on local disk (`media/`, gitignored) with an S3/R2 swap documented in `payload.config.ts` for production.
+
+The `src/data/` helpers (`getFeaturedArtworks`, `getArtworkBySlug`, `getAllProducts`, `getSiteSettings`, …) keep their **original signatures** but now query Payload's Local API (`src/lib/payload.ts` → cached `getPayload`) and map Payload docs onto the component-facing types in `src/types/index.ts` — that file is still the contract the components depend on. `src/lib/media.ts` (`mediaUrl`) resolves an uploaded image to a sized-variant URL (`card`/`hero`/`portrait`), replacing Sanity's `urlFor`. Generated DB types live in `payload-types.ts` (`@payload-types`); the mappers bridge those to `src/types`. Editing content in `/admin` triggers `revalidatePath` via collection/global `afterChange` hooks (`src/payload/hooks/revalidate.ts`) — the replacement for ISR.
 
 **Inquiry-first commerce — there is no checkout/payment.** This is the core domain decision. The flow is: add work → cart (inquiry list) → "Request these works" → contact form prefilled with a line-item summary → studio confirms manually. When touching commerce, preserve this; do not add payment/checkout semantics.
 
-- Cart state lives in `src/lib/cart-context.tsx` (`CartProvider` + `useCart`): a `useReducer` store with `localStorage` persistence (key `atelier-cart`) and the drawer open/close state. `addItem` auto-opens the drawer. The provider wraps the whole app in `src/app/layout.tsx`, and `CartDrawer` is mounted there globally.
+- Cart state lives in `src/lib/cart-context.tsx` (`CartProvider` + `useCart`): a `useReducer` store with `localStorage` persistence (key `atelier-cart`) and the drawer open/close state. `addItem` auto-opens the drawer. The provider wraps the public site in `src/app/(frontend)/layout.tsx`, and `CartDrawer` is mounted there globally.
 - Cross-page handoff happens via URL params read in `src/components/ContactView.tsx`:
   - `/contact?artwork=<slug>` → prefilled from the artwork (set by the detail page CTA)
   - `/contact?inquiry=cart` → prefilled with a cart line-item summary + indicative total (set by `CartDrawer`)

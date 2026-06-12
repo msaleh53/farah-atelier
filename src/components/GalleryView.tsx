@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Artwork } from "@/types";
-import { artworkCategories } from "@/data/artworks";
+import { artworkCategories } from "@/data/taxonomies";
 import FilterBar from "@/components/FilterBar";
 import GalleryGrid from "@/components/GalleryGrid";
 
