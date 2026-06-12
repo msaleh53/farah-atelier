@@ -1,3 +1,5 @@
+import { withPayload } from "@payloadcms/next/withPayload";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -6,12 +8,8 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
     ],
   },
 };
 
-export default nextConfig;
+export default withPayload(nextConfig);

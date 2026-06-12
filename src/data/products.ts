@@ -1,34 +1,48 @@
-import { sanityFetch } from '@/sanity/lib/live'
+import { getPayloadClient } from '@/lib/payload'
+import { mediaUrl } from '@/lib/media'
+import type { Product as PayloadProduct } from '@payload-types'
 import type { Product } from '@/types'
 
-const projection = `{
-  "id": _id,
-  "slug": slug.current,
-  title,
-  type,
-  "artworkSlug": artwork->slug.current,
-  edition,
-  size,
-  price,
-  "image": image.asset->url,
-  imageAlt
-}`
+/** Map a Payload `products` doc onto the component-facing `Product` shape. */
+function toProduct(doc: PayloadProduct): Product {
+  // `artwork` is a relationship: populated object (depth>=1) or an id.
+  const artwork = doc.artwork
+  const artworkSlug =
+    artwork && typeof artwork === 'object' ? artwork.slug : undefined
 
-const ALL_PRODUCTS_QUERY = `*[_type == "product"] | order(_createdAt asc) ${projection}`
-const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] ${projection}`
+  return {
+    id: String(doc.id),
+    slug: doc.slug ?? '',
+    title: doc.title ?? '',
+    type: doc.type,
+    ...(artworkSlug ? { artworkSlug } : {}),
+    edition: doc.edition ?? '',
+    size: doc.size ?? '',
+    price: doc.price ?? 0,
+    image: mediaUrl(doc.image, 'card'),
+    imageAlt: doc.imageAlt ?? '',
+  }
+}
 
 export async function getAllProducts(): Promise<Product[]> {
-  const { data } = await sanityFetch({ query: ALL_PRODUCTS_QUERY })
-  return (data as Product[]) ?? []
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'products',
+    sort: 'createdAt',
+    depth: 1,
+    limit: 100,
+    pagination: false,
+  })
+  return docs.map(toProduct)
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const { data } = await sanityFetch({ query: PRODUCT_BY_SLUG_QUERY, params: { slug } })
-  return (data as Product | null) ?? null
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'products',
+    where: { slug: { equals: slug } },
+    depth: 1,
+    limit: 1,
+  })
+  return docs[0] ? toProduct(docs[0]) : null
 }
-
-export const productTypes = [
-  'Original',
-  'Limited Print',
-  'Open Edition Print',
-] as const

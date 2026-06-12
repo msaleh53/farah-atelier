@@ -2,30 +2,32 @@
   "name": "artist-website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "studio:dev": "sanity dev",
-    "studio:deploy": "sanity deploy",
-    "seed": "sanity exec scripts/seed.ts --with-user-token"
+    "seed": "tsx scripts/seed.ts",
+    "generate:types": "payload generate:types"
   },
   "dependencies": {
-    "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "^3.89.0",
-    "next": "^15.5.19",
-    "next-sanity": "^13.0.11",
-    "react": "^19.3.0-canary-43bcbf80-20260603",
-    "react-dom": "^19.3.0-canary-43bcbf80-20260603",
-    "sanity": "^5.30.0",
-    "styled-components": "^6.4.2"
+    "@payloadcms/db-postgres": "^3.85.1",
+    "@payloadcms/next": "^3.85.1",
+    "@payloadcms/richtext-lexical": "^3.85.1",
+    "graphql": "^16.14.2",
+    "next": "~15.4.11",
+    "payload": "^3.85.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sharp": "^0.35.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8.4.49",

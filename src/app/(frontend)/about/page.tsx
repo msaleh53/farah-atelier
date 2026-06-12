@@ -8,7 +8,6 @@ import {
   FALLBACK_ARTIST_PORTRAIT,
   type TimelineItem,
 } from "@/data/settings";
-import { urlFor } from "@/sanity/lib/image";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -35,14 +34,7 @@ const FALLBACK_TIMELINE: TimelineItem[] = [
 export default async function AboutPage() {
   const settings = await getSiteSettings();
 
-  const portraitUrl = settings?.artistPortrait
-    ? urlFor(settings.artistPortrait)
-        .width(1000)
-        .height(1250)
-        .fit("crop")
-        .auto("format")
-        .url()
-    : FALLBACK_ARTIST_PORTRAIT;
+  const portraitUrl = settings?.artistPortrait ?? FALLBACK_ARTIST_PORTRAIT;
   const portraitAlt =
     settings?.artistPortraitAlt || `${site.artistName} working in the studio.`;
   const lead = settings?.aboutLead || FALLBACK_LEAD;
@@ -65,9 +57,6 @@ export default async function AboutPage() {
             priority
             sizes="(max-width: 1024px) 100vw, 45vw"
             className="object-cover"
-            {...(settings?.artistPortraitLqip
-              ? { placeholder: "blur", blurDataURL: settings.artistPortraitLqip }
-              : {})}
           />
         </div>
 

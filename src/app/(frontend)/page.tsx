@@ -10,7 +10,6 @@ import {
   toParagraphs,
   FALLBACK_ARTIST_PORTRAIT,
 } from "@/data/settings";
-import { urlFor } from "@/sanity/lib/image";
 import { site } from "@/lib/site";
 
 const FALLBACK_HOME_INTRO = `For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.
@@ -24,14 +23,7 @@ export default async function HomePage() {
   ]);
   const featured = featuredAll.slice(0, 3);
 
-  const portraitUrl = settings?.artistPortrait
-    ? urlFor(settings.artistPortrait)
-        .width(900)
-        .height(1125)
-        .fit("crop")
-        .auto("format")
-        .url()
-    : FALLBACK_ARTIST_PORTRAIT;
+  const portraitUrl = settings?.artistPortrait ?? FALLBACK_ARTIST_PORTRAIT;
   const portraitAlt =
     settings?.artistPortraitAlt ||
     `Portrait of the artist ${site.artistName} in the studio.`;
@@ -67,9 +59,6 @@ export default async function HomePage() {
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
-              {...(settings?.artistPortraitLqip
-                ? { placeholder: "blur", blurDataURL: settings.artistPortraitLqip }
-                : {})}
             />
           </div>
           <div className="order-1 md:order-2">
