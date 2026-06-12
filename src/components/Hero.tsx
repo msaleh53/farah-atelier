@@ -2,30 +2,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { getSiteSettings } from "@/data/settings";
-import { urlFor } from "@/sanity/lib/image";
 
 // Fallbacks used until the studio's Site Settings are filled in.
 const FALLBACK_HEADLINE = "Quiet paintings for considered spaces.";
 const FALLBACK_SUBTITLE = `${site.artistName} works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.`;
-
-// The hero frame is locked to 4:5. Request the image already cropped to that
-// ratio so it can never alter the layout, and so Farah's hotspot is respected.
-const HERO_WIDTH = 1200;
-const HERO_HEIGHT = 1500;
 
 export default async function Hero() {
   const settings = await getSiteSettings();
   const headline = settings?.heroHeadline || FALLBACK_HEADLINE;
   const subtitle = settings?.heroSubtitle || FALLBACK_SUBTITLE;
   const imageAlt = settings?.heroImageAlt || "Featured artwork from the studio.";
-  const imageUrl = settings?.heroImage
-    ? urlFor(settings.heroImage)
-        .width(HERO_WIDTH)
-        .height(HERO_HEIGHT)
-        .fit("crop") // crops to 4:5 around the editor's hotspot
-        .auto("format")
-        .url()
-    : null;
+  // Already cropped to the locked 4:5 frame by the Media `hero` size variant.
+  const imageUrl = settings?.heroImage ?? null;
 
   return (
     <section className="relative">
@@ -58,9 +46,6 @@ export default async function Hero() {
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
-                {...(settings?.heroImageLqip
-                  ? { placeholder: "blur", blurDataURL: settings.heroImageLqip }
-                  : {})}
               />
             ) : (
               <div className="flex h-full items-center justify-center">

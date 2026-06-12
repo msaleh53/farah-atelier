@@ -10,8 +10,10 @@
 /.next/
 /out/
 
-# sanity studio build artifacts
-/.sanity/
+# payload local media uploads (stored on disk in dev; use S3/R2 in prod)
+/media/
+
+# stray build output
 /dist/
 
 # production

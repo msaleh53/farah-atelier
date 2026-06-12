@@ -1,22 +1,18 @@
 /**
- * Seeds Sanity with the original 8 artworks + 6 products from the old local data.
+ * Seeds Payload with the 8 artworks + 6 products + Site Settings text.
  *
  * Run with:  npm run seed
- * (which calls `sanity exec scripts/seed.ts --with-user-token`, authenticating
- *  with your logged-in Sanity user — no API token needed.)
  *
- * Non-destructive: uses deterministic _ids (artwork-<slug> / product-<slug>)
- * with createIfNotExists, and setIfMissing for site settings fields. Re-running
- * only fills in what's missing — it never overwrites edits or images that have
- * been added in the Studio.
+ * Idempotent: skips any artwork/product whose slug already exists, and only
+ * fills Site Settings fields that are still empty — so re-running never wipes
+ * edits or uploaded images made in the admin.
  *
- * NOTE: images are intentionally omitted — the originals were Unsplash
- * placeholders. Documents will show a "required image" warning in the Studio
- * until Farah uploads real photos. All text content is populated.
+ * NOTE: images are intentionally omitted (originals were Unsplash placeholders).
+ * Documents render an "Image coming soon" placeholder on the site until Farah
+ * uploads real photos in /admin.
  */
-import { getCliClient } from 'sanity/cli'
-
-const client = getCliClient()
+import { config as loadEnv } from 'dotenv'
+loadEnv({ path: '.env.local' })
 
 type ArtworkSeed = {
   slug: string
@@ -229,82 +225,118 @@ const products: ProductSeed[] = [
   },
 ]
 
+const siteSettings = {
+  heroHeadline: 'Quiet paintings for considered spaces.',
+  heroSubtitle:
+    'Farah Ramadan works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.',
+  homeIntro:
+    'For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.\n\nEvery work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.',
+  aboutLead:
+    'I make quiet work about the light and geology of Jordan — paintings, drawings and objects that ask to be lived with slowly.',
+  aboutBody:
+    'My practice moves between oil, ink and clay, but it is held together by restraint: the fewest marks that still carry a feeling. I work in long looking sessions, often returning to the same ridge, the same tide, until a single gesture holds it.\n\nMaterials matter. Sand from Wadi Rum is bound into the mixed-media panels; wood ash glazes the vessels; the works on paper are made in the field, drying in the sun. The landscape is not only the subject but, often, the medium.\n\nI prefer to know where a work is going. That is why everything leaves the studio through conversation rather than a checkout — an inquiry-first approach that lets each acquisition begin with care.',
+  timeline: [
+    { year: '2003', text: 'Begins formal study in painting and printmaking.' },
+    { year: '2011', text: 'First solo exhibition of works on paper in Amman.' },
+    { year: '2018', text: 'Expands the practice into clay and mixed media.' },
+    { year: '2024', text: 'Opens the studio for direct, inquiry-first acquisition.' },
+  ],
+}
+
 async function seed() {
-  const tx = client.transaction()
+  // Import the config AFTER env is loaded — buildConfig reads DATABASE_URL at
+  // module-eval time.
+  const { getPayload } = await import('payload')
+  const { default: config } = await import('../payload.config')
+  const payload = await getPayload({ config })
 
-  // Site Settings singleton — ensure it exists, then setIfMissing each field so
-  // re-seeding adds new fields without clobbering anything Farah has customized.
-  tx.createIfNotExists({ _id: 'siteSettings', _type: 'siteSettings' })
-  tx.patch('siteSettings', (p) =>
-    p.setIfMissing({
-      heroHeadline: 'Quiet paintings for considered spaces.',
-      heroSubtitle:
-        'Farah Ramadan works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.',
-      homeIntro:
-        'For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.\n\nEvery work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.',
-      aboutLead:
-        'I make quiet work about the light and geology of Jordan — paintings, drawings and objects that ask to be lived with slowly.',
-      aboutBody:
-        'My practice moves between oil, ink and clay, but it is held together by restraint: the fewest marks that still carry a feeling. I work in long looking sessions, often returning to the same ridge, the same tide, until a single gesture holds it.\n\nMaterials matter. Sand from Wadi Rum is bound into the mixed-media panels; wood ash glazes the vessels; the works on paper are made in the field, drying in the sun. The landscape is not only the subject but, often, the medium.\n\nI prefer to know where a work is going. That is why everything leaves the studio through conversation rather than a checkout — an inquiry-first approach that lets each acquisition begin with care.',
-      timeline: [
-        { _key: 'm2003', year: '2003', text: 'Begins formal study in painting and printmaking.' },
-        { _key: 'm2011', year: '2011', text: 'First solo exhibition of works on paper in Amman.' },
-        { _key: 'm2018', year: '2018', text: 'Expands the practice into clay and mixed media.' },
-        { _key: 'm2024', year: '2024', text: 'Opens the studio for direct, inquiry-first acquisition.' },
-      ],
-    })
-  )
-
+  // ── Artworks ──────────────────────────────────────────────────────────────
+  const artworkIdBySlug = new Map<string, number>()
   for (const a of artworks) {
-    tx.createIfNotExists({
-      _id: `artwork-${a.slug}`,
-      _type: 'artwork',
-      title: a.title,
-      slug: { _type: 'slug', current: a.slug },
-      year: a.year,
-      category: a.category,
-      medium: a.medium,
-      dimensions: a.dimensions,
-      availability: a.availability,
-      featured: a.featured,
-      imageAlt: a.imageAlt,
-      story: a.story,
-      // price omitted when null → renders as "on request"
-      ...(a.price !== null ? { price: a.price } : {}),
+    const existing = await payload.find({
+      collection: 'artworks',
+      where: { slug: { equals: a.slug } },
+      limit: 1,
+      depth: 0,
     })
+    if (existing.docs[0]) {
+      artworkIdBySlug.set(a.slug, existing.docs[0].id)
+      payload.logger.info(`artwork exists, skipping: ${a.slug}`)
+      continue
+    }
+    const created = await payload.create({
+      collection: 'artworks',
+      data: {
+        slug: a.slug,
+        title: a.title,
+        year: a.year,
+        category: a.category as never,
+        medium: a.medium,
+        dimensions: a.dimensions,
+        availability: a.availability as never,
+        featured: a.featured,
+        imageAlt: a.imageAlt,
+        story: a.story,
+        price: a.price,
+      },
+    })
+    artworkIdBySlug.set(a.slug, created.id)
+    payload.logger.info(`created artwork: ${a.slug}`)
   }
 
+  // ── Products (link to artworks by slug) ─────────────────────────────────────
   for (const p of products) {
-    tx.createIfNotExists({
-      _id: `product-${p.slug}`,
-      _type: 'product',
-      title: p.title,
-      slug: { _type: 'slug', current: p.slug },
-      type: p.type,
-      ...(p.artworkSlug
-        ? {
-            artwork: {
-              _type: 'reference',
-              _ref: `artwork-${p.artworkSlug}`,
-            },
-          }
-        : {}),
-      edition: p.edition,
-      size: p.size,
-      price: p.price,
-      imageAlt: p.imageAlt,
+    const existing = await payload.find({
+      collection: 'products',
+      where: { slug: { equals: p.slug } },
+      limit: 1,
+      depth: 0,
     })
+    if (existing.docs[0]) {
+      payload.logger.info(`product exists, skipping: ${p.slug}`)
+      continue
+    }
+    const artworkId = p.artworkSlug ? artworkIdBySlug.get(p.artworkSlug) : undefined
+    await payload.create({
+      collection: 'products',
+      data: {
+        slug: p.slug,
+        title: p.title,
+        type: p.type as never,
+        ...(artworkId ? { artwork: artworkId } : {}),
+        edition: p.edition,
+        size: p.size,
+        price: p.price,
+        imageAlt: p.imageAlt,
+      },
+    })
+    payload.logger.info(`created product: ${p.slug}`)
   }
 
-  const result = await tx.commit()
-  console.log(
-    `✅ Seeded site settings + ${artworks.length} artworks + ${products.length} products ` +
-      `(${result.results.length} documents written).`
-  )
-  console.log('⚠️  Images still need uploading per document in the Studio.')
+  // ── Site Settings (only fill empty fields) ──────────────────────────────────
+  const current = await payload.findGlobal({ slug: 'siteSettings', depth: 0 })
+  const currentRecord = current as unknown as Record<string, unknown>
+  const data: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(siteSettings)) {
+    const existingValue = currentRecord?.[key]
+    const isEmpty =
+      existingValue == null ||
+      existingValue === '' ||
+      (Array.isArray(existingValue) && existingValue.length === 0)
+    if (isEmpty) data[key] = value
+  }
+  if (Object.keys(data).length > 0) {
+    await payload.updateGlobal({ slug: 'siteSettings', data: data as never })
+    payload.logger.info(`updated site settings: ${Object.keys(data).join(', ')}`)
+  } else {
+    payload.logger.info('site settings already populated, skipping')
+  }
+
+  payload.logger.info('Seed complete.')
+  process.exit(0)
 }
 
 seed().catch((err) => {
-  console.error('Seed failed:', err.message)
+  console.error(err)
   process.exit(1)
 })
