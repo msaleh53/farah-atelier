@@ -14,6 +14,9 @@ import type { CollectionConfig } from 'payload'
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: { group: 'Content' },
+  // Images are served over HTTP (next/image → /api/media/file/*), which enforces
+  // collection access control — so read must be public. Writes stay admin-only.
+  access: { read: () => true },
   upload: {
     // Read/write under <project>/media. Served same-origin via /api/media/file/*.
     staticDir: 'media',
