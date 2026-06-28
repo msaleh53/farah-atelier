@@ -13,7 +13,7 @@ const getRawSettings = cache(async (): Promise<SiteSetting | null> => {
   return (doc as SiteSetting | null) ?? null
 })
 
-export interface TimelineItem {
+export interface CVItem {
   year: string | null
   text: string | null
 }
@@ -30,7 +30,8 @@ export interface SiteSettings {
   homeIntro: string | null
   aboutLead: string | null
   aboutBody: string | null
-  timeline: TimelineItem[] | null
+  exhibitions: CVItem[] | null
+  volunteering: CVItem[] | null
 }
 
 /** Fallback portrait used until Farah uploads her own (Unsplash placeholder). */
@@ -51,8 +52,13 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     homeIntro: doc.homeIntro ?? null,
     aboutLead: doc.aboutLead ?? null,
     aboutBody: doc.aboutBody ?? null,
-    timeline:
-      doc.timeline?.map((t) => ({
+    exhibitions:
+      doc.exhibitions?.map((t) => ({
+        year: t.year ?? null,
+        text: t.text ?? null,
+      })) ?? null,
+    volunteering:
+      doc.volunteering?.map((t) => ({
         year: t.year ?? null,
         text: t.text ?? null,
       })) ?? null,

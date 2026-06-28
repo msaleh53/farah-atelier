@@ -71,9 +71,18 @@ export const SiteSettings: GlobalConfig = {
               },
             },
             {
-              name: 'timeline',
+              name: 'exhibitions',
               type: 'array',
-              label: 'Selected timeline',
+              label: 'Exhibitions',
+              fields: [
+                { name: 'year', type: 'text', required: true },
+                { name: 'text', type: 'text', required: true },
+              ],
+            },
+            {
+              name: 'volunteering',
+              type: 'array',
+              label: 'Volunteering & community',
               fields: [
                 { name: 'year', type: 'text', required: true },
                 { name: 'text', type: 'text', required: true },

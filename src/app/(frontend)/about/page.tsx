@@ -7,7 +7,7 @@ import {
   getSiteContent,
   toParagraphs,
   FALLBACK_ARTIST_PORTRAIT,
-  type TimelineItem,
+  type CVItem,
 } from "@/data/settings";
 import { site } from "@/lib/site";
 
@@ -26,11 +26,13 @@ const FALLBACK_BODY = `My practice is rooted in observation — long sessions in
 
 I'm currently preparing for my graduation exhibition and exploring what comes next. I'm open to conversations about collaboration, residencies, and commissions.`;
 
-const FALLBACK_TIMELINE: TimelineItem[] = [
-  { year: "2021", text: "Enrolled in Fine Art at [Your University]." },
-  { year: "2023", text: "Group exhibition — [Gallery Name], Amman." },
-  { year: "2024", text: "Selected for the [Award/Residency] programme." },
+const FALLBACK_EXHIBITIONS: CVItem[] = [
   { year: "2025", text: "Graduation exhibition — [Venue], Amman." },
+  { year: "2023", text: "Group exhibition — [Gallery Name], Amman." },
+];
+
+const FALLBACK_VOLUNTEERING: CVItem[] = [
+  { year: "2024", text: "[Organisation] — [Role], Amman." },
 ];
 
 export default async function AboutPage() {
@@ -44,10 +46,14 @@ export default async function AboutPage() {
     settings?.artistPortraitAlt || `${site.artistName} working in the studio.`;
   const lead = settings?.aboutLead || FALLBACK_LEAD;
   const bodyParagraphs = toParagraphs(settings?.aboutBody || FALLBACK_BODY);
-  const timeline =
-    settings?.timeline && settings.timeline.length > 0
-      ? settings.timeline
-      : FALLBACK_TIMELINE;
+  const exhibitions =
+    settings?.exhibitions && settings.exhibitions.length > 0
+      ? settings.exhibitions
+      : FALLBACK_EXHIBITIONS;
+  const volunteering =
+    settings?.volunteering && settings.volunteering.length > 0
+      ? settings.volunteering
+      : FALLBACK_VOLUNTEERING;
 
   return (
     <>
@@ -75,13 +81,33 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* Exhibitions */}
       <section className="container-editorial py-16">
         <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
-          Selected timeline
+          Exhibitions
         </h2>
         <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-          {timeline.map((t, i) => (
+          {exhibitions.map((t, i) => (
+            <li
+              key={`${t.year}-${i}`}
+              className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
+            >
+              <span className="font-heading text-2xl text-ochre">{t.year}</span>
+              <span className="self-center font-body text-base text-charcoal/80">
+                {t.text}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Volunteering */}
+      <section className="container-editorial pb-16">
+        <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
+          Volunteering &amp; community
+        </h2>
+        <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
+          {volunteering.map((t, i) => (
             <li
               key={`${t.year}-${i}`}
               className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"

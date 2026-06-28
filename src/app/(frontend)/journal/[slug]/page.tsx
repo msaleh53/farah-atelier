@@ -88,13 +88,13 @@ export default async function JournalPostPage({
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 900px"
-            className="object-cover"
+            className="object-contain"
           />
         </div>
       )}
 
       {post.body != null && (
-        <div className="prose prose-stone mx-auto mt-12 max-w-2xl font-body">
+        <div className="prose prose-stone mx-auto mt-12 max-w-2xl font-body prose-a:text-ochre prose-a:no-underline hover:prose-a:underline prose-strong:text-charcoal">
           <RichText data={post.body as SerializedEditorState} />
         </div>
       )}
