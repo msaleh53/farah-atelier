@@ -75,30 +75,26 @@ export interface SiteContent {
   instagram: string
   seoDescription: string
   gallery: { eyebrow: string; intro: string }
-  shop: { eyebrow: string; intro: string }
   contact: { eyebrow: string; intro: string; responseTime: string; note: string }
   home: { featuredEyebrow: string; featuredTitle: string; closingEyebrow: string; closingHeading: string }
   about: { ctaHeading: string }
 }
 
 const DEFAULTS = {
-  galleryEyebrow: 'The collection',
+  galleryEyebrow: 'Selected works',
   galleryIntro:
-    'A continuously evolving body of work. Filter by medium or availability; select any piece to read its story and begin an inquiry.',
-  shopEyebrow: 'Prints & originals',
-  shopIntro:
-    'Acquisition here is inquiry-first. Build a list of works, request them, and the studio will personally confirm availability and arrange payment and delivery.',
-  contactEyebrow: 'Begin a conversation',
+    'A continuously evolving body of work across painting, drawing, and mixed media. Select any piece to read its story.',
+  contactEyebrow: 'Get in touch',
   contactIntro:
     'Whether you have your eye on a particular piece or want something made for your space, every conversation starts here.',
   contactResponseTime: 'Within two business days',
   contactNote:
-    'Studio visits are available by appointment. Mention your preferred dates in your message and we will arrange a time.',
+    'I try to respond to all messages within two business days.',
   homeFeaturedEyebrow: 'Selected works',
   homeFeaturedTitle: 'Featured',
-  homeClosingEyebrow: 'Acquire a work',
-  homeClosingHeading: 'Begin a quiet conversation about bringing a piece home.',
-  aboutCtaHeading: 'Find a work for your space, or imagine one together.',
+  homeClosingEyebrow: 'Say hello',
+  homeClosingHeading: 'Interested in my work or want to collaborate? Get in touch.',
+  aboutCtaHeading: 'Explore the work, or reach out to say hello.',
 } as const
 
 /** Use the CMS value when it's a non-empty string, otherwise the fallback. */
@@ -120,10 +116,6 @@ export async function getSiteContent(): Promise<SiteContent> {
     gallery: {
       eyebrow: pick(doc?.galleryEyebrow, DEFAULTS.galleryEyebrow),
       intro: pick(doc?.galleryIntro, DEFAULTS.galleryIntro),
-    },
-    shop: {
-      eyebrow: pick(doc?.shopEyebrow, DEFAULTS.shopEyebrow),
-      intro: pick(doc?.shopIntro, DEFAULTS.shopIntro),
     },
     contact: {
       eyebrow: pick(doc?.contactEyebrow, DEFAULTS.contactEyebrow),

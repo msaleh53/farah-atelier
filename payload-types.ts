@@ -70,7 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     artworks: Artwork;
-    products: Product;
+    posts: Post;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -81,7 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     artworks: ArtworksSelect<false> | ArtworksSelect<true>;
-    products: ProductsSelect<false> | ProductsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -222,7 +222,6 @@ export interface Artwork {
   category: 'Painting' | 'Works on Paper' | 'Mixed Media' | 'Sculpture';
   medium?: string | null;
   dimensions?: string | null;
-  availability: 'available' | 'reserved' | 'sold';
   /**
    * Show on the homepage Featured section.
    */
@@ -233,37 +232,54 @@ export interface Artwork {
    */
   imageAlt?: string | null;
   story?: string | null;
-  /**
-   * Leave blank for "on request / inquiry only".
-   */
-  price?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products".
+ * via the `definition` "posts".
  */
-export interface Product {
+export interface Post {
   id: number;
   title: string;
   /**
    * Auto-filled from the title if left blank.
    */
   slug?: string | null;
-  type: 'Original' | 'Limited Print' | 'Open Edition Print';
-  /**
-   * The original artwork this product depicts (if applicable).
-   */
-  artwork?: (number | null) | Artwork;
-  edition?: string | null;
-  size?: string | null;
-  price: number;
-  image?: (number | null) | Media;
+  publishedAt: string;
+  coverImage?: (number | null) | Media;
   /**
    * Describe the image for screen readers / SEO.
    */
-  imageAlt?: string | null;
+  coverImageAlt?: string | null;
+  /**
+   * Short summary shown in the journal listing and used for SEO.
+   */
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * e.g. Process, Exhibition, Sketchbook
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -304,8 +320,8 @@ export interface PayloadLockedDocument {
         value: number | Artwork;
       } | null)
     | ({
-        relationTo: 'products';
-        value: number | Product;
+        relationTo: 'posts';
+        value: number | Post;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -445,29 +461,31 @@ export interface ArtworksSelect<T extends boolean = true> {
   category?: T;
   medium?: T;
   dimensions?: T;
-  availability?: T;
   featured?: T;
   image?: T;
   imageAlt?: T;
   story?: T;
-  price?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "products_select".
+ * via the `definition` "posts_select".
  */
-export interface ProductsSelect<T extends boolean = true> {
+export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  type?: T;
-  artwork?: T;
-  edition?: T;
-  size?: T;
-  price?: T;
-  image?: T;
-  imageAlt?: T;
+  publishedAt?: T;
+  coverImage?: T;
+  coverImageAlt?: T;
+  excerpt?: T;
+  body?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -554,8 +572,6 @@ export interface SiteSetting {
   seoDescription?: string | null;
   galleryEyebrow?: string | null;
   galleryIntro?: string | null;
-  shopEyebrow?: string | null;
-  shopIntro?: string | null;
   contactEyebrow?: string | null;
   contactIntro?: string | null;
   contactResponseTime?: string | null;
@@ -603,8 +619,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   seoDescription?: T;
   galleryEyebrow?: T;
   galleryIntro?: T;
-  shopEyebrow?: T;
-  shopIntro?: T;
   contactEyebrow?: T;
   contactIntro?: T;
   contactResponseTime?: T;

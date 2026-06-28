@@ -43,17 +43,6 @@ export const Artworks: CollectionConfig = {
     { name: 'medium', type: 'text' },
     { name: 'dimensions', type: 'text' },
     {
-      name: 'availability',
-      type: 'select',
-      required: true,
-      defaultValue: 'available',
-      options: [
-        { label: 'Available', value: 'available' },
-        { label: 'Reserved', value: 'reserved' },
-        { label: 'Sold', value: 'sold' },
-      ],
-    },
-    {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
@@ -69,15 +58,6 @@ export const Artworks: CollectionConfig = {
       name: 'story',
       type: 'textarea',
       label: "The work (artist's note)",
-    },
-    {
-      name: 'price',
-      type: 'number',
-      label: 'Price (JOD)',
-      admin: {
-        position: 'sidebar',
-        description: 'Leave blank for "on request / inquiry only".',
-      },
     },
   ],
 }

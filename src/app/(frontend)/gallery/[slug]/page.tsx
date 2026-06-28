@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getArtworkBySlug, getArtworkSlugs } from "@/data/artworks";
-import { getAllProducts } from "@/data/products";
-import { formatPrice } from "@/lib/format";
 import { site } from "@/lib/site";
 
 export async function generateStaticParams() {
@@ -40,12 +38,6 @@ export async function generateMetadata({
   };
 }
 
-const availabilityCopy: Record<string, string> = {
-  available: "Available — inquire to acquire",
-  reserved: "Currently reserved",
-  sold: "Sold — similar works may be commissioned",
-};
-
 export default async function ArtworkDetailPage({
   params,
 }: {
@@ -55,19 +47,11 @@ export default async function ArtworkDetailPage({
   const artwork = await getArtworkBySlug(slug);
   if (!artwork) notFound();
 
-  const relatedPrint = (await getAllProducts()).find(
-    (p) => p.artworkSlug === artwork.slug && p.type !== "Original",
-  );
-
   const metadata: { label: string; value: string }[] = [
     { label: "Year", value: String(artwork.year) },
     { label: "Medium", value: artwork.medium },
     { label: "Dimensions", value: artwork.dimensions },
     { label: "Category", value: artwork.category },
-    {
-      label: "Price",
-      value: artwork.price ? `${formatPrice(artwork.price)} (indicative)` : "On request",
-    },
   ].filter((row) => Boolean(row.value));
 
   const jsonLd = {
@@ -79,19 +63,6 @@ export default async function ArtworkDetailPage({
     dateCreated: String(artwork.year),
     ...(artwork.image ? { image: artwork.image } : {}),
     creator: { "@type": "Person", name: site.artistName },
-    ...(artwork.price
-      ? {
-          offers: {
-            "@type": "Offer",
-            price: artwork.price,
-            priceCurrency: "JOD",
-            availability:
-              artwork.availability === "available"
-                ? "https://schema.org/InStock"
-                : "https://schema.org/SoldOut",
-          },
-        }
-      : {}),
   };
 
   return (
@@ -132,7 +103,6 @@ export default async function ArtworkDetailPage({
 
         {/* Details */}
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="eyebrow mb-3">{availabilityCopy[artwork.availability]}</p>
           <h1 className="font-heading text-4xl font-light leading-tight text-charcoal sm:text-5xl">
             {artwork.title}
           </h1>
@@ -153,26 +123,14 @@ export default async function ArtworkDetailPage({
             ))}
           </dl>
 
-          <div className="mt-8 flex flex-col gap-3">
+          <div className="mt-8">
             <Link
               href={`/contact?artwork=${artwork.slug}`}
               className="btn-primary w-full"
             >
-              {artwork.availability === "sold"
-                ? "Commission Similar"
-                : "Inquire to Acquire"}
+              Get in touch
             </Link>
-            {relatedPrint ? (
-              <Link href="/shop" className="btn-outline w-full">
-                A print is available — visit Shop
-              </Link>
-            ) : null}
           </div>
-
-          <p className="mt-6 font-body text-xs leading-relaxed text-label-gray">
-            Every acquisition begins as a conversation. The studio responds to
-            inquiries within two business days.
-          </p>
         </div>
       </div>
 

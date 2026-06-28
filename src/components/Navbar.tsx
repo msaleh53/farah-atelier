@@ -4,11 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, site } from "@/lib/site";
-import { useCart } from "@/lib/cart-context";
 
 export default function Navbar({ brandName = site.name }: { brandName?: string }) {
   const pathname = usePathname();
-  const { count, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -64,18 +62,6 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
         </ul>
 
         <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={openCart}
-            className="group relative flex items-center gap-2 font-body text-xs uppercase tracking-[0.2em] text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-            aria-label={`Open cart, ${count} item${count === 1 ? "" : "s"}`}
-          >
-            <span className="hidden sm:inline">Cart</span>
-            <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-charcoal/30 px-1.5 text-[0.65rem] tabular-nums group-hover:border-charcoal">
-              {count}
-            </span>
-          </button>
-
           {/* Mobile toggle */}
           <button
             type="button"

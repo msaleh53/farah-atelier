@@ -33,13 +33,13 @@ export const revalidateArtworkDelete: CollectionAfterDeleteHook = ({ doc }) => {
   return doc
 }
 
-/** Products appear on the shop and can surface a "print available" link on details. */
-export const revalidateProduct: CollectionAfterChangeHook = ({ doc }) => {
-  revalidate(['/shop'], { route: '/gallery/[slug]' })
+/** Journal posts appear on the journal index and each post detail page. */
+export const revalidatePost: CollectionAfterChangeHook = ({ doc }) => {
+  revalidate(['/journal'], { route: '/journal/[slug]' })
   return doc
 }
-export const revalidateProductDelete: CollectionAfterDeleteHook = ({ doc }) => {
-  revalidate(['/shop'], { route: '/gallery/[slug]' })
+export const revalidatePostDelete: CollectionAfterDeleteHook = ({ doc }) => {
+  revalidate(['/journal'], { route: '/journal/[slug]' })
   return doc
 }
 
@@ -48,7 +48,7 @@ export const revalidateProductDelete: CollectionAfterDeleteHook = ({ doc }) => {
  * navbar, SEO) plus every page's intro copy — so refresh the whole frontend.
  */
 export const revalidateSettings: GlobalAfterChangeHook = ({ doc }) => {
-  revalidate(['/', '/gallery', '/shop', '/about', '/contact'], {
+  revalidate(['/', '/gallery', '/journal', '/about', '/contact'], {
     route: '/gallery/[slug]',
   })
   return doc

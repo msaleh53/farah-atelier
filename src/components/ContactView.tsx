@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Artwork } from "@/types";
-import { useCart } from "@/lib/cart-context";
-import { formatPrice } from "@/lib/format";
 import InquiryForm from "@/components/InquiryForm";
 import CommissionForm from "@/components/CommissionForm";
 
@@ -16,44 +14,24 @@ export default function ContactView({
   prefillArtwork?: Artwork | null;
 }) {
   const searchParams = useSearchParams();
-  const { items, subtotal } = useCart();
   const [tab, setTab] = useState<Tab>("inquiry");
 
   const artworkSlug = searchParams.get("artwork");
-  const isCartInquiry = searchParams.get("inquiry") === "cart";
 
-  // Build prefilled subject/message from the incoming context.
   const { defaultSubject, defaultMessage } = useMemo(() => {
     if (prefillArtwork) {
       return {
         defaultSubject: `${prefillArtwork.title} (${prefillArtwork.year})`,
-        defaultMessage: `I'd like to inquire about "${prefillArtwork.title}" — ${prefillArtwork.medium}, ${prefillArtwork.dimensions}.\n\n`,
-      };
-    }
-    if (isCartInquiry && items.length > 0) {
-      const lines = items
-        .map(
-          (i) =>
-            `• ${i.product.title} — ${i.product.type} ×${i.quantity} (${formatPrice(
-              i.product.price * i.quantity,
-            )})`,
-        )
-        .join("\n");
-      return {
-        defaultSubject: "Acquisition inquiry (selected works)",
-        defaultMessage: `I'd like to inquire about the following works:\n\n${lines}\n\nIndicative total: ${formatPrice(
-          subtotal,
-        )}\n\n`,
+        defaultMessage: `I'd like to ask about "${prefillArtwork.title}" — ${prefillArtwork.medium}, ${prefillArtwork.dimensions}.\n\n`,
       };
     }
     return { defaultSubject: "", defaultMessage: "" };
-  }, [prefillArtwork, isCartInquiry, items, subtotal]);
+  }, [prefillArtwork]);
 
-  // If arriving from a work or cart, default to the inquiry tab.
   useEffect(() => {
     if (searchParams.get("type") === "commission") setTab("commission");
-    else if (artworkSlug || isCartInquiry) setTab("inquiry");
-  }, [searchParams, artworkSlug, isCartInquiry]);
+    else if (artworkSlug) setTab("inquiry");
+  }, [searchParams, artworkSlug]);
 
   return (
     <div>
@@ -89,8 +67,7 @@ export default function ContactView({
       {tab === "inquiry" ? (
         <div role="tabpanel" id="panel-inquiry" aria-labelledby="tab-inquiry">
           <p className="mb-8 max-w-xl font-body text-base leading-relaxed text-label-gray">
-            Inquire about a specific work, a print, or availability. Submitting
-            sends your message to the studio — no payment is taken online.
+            Ask about a specific work, a collaboration, or anything else.
           </p>
           <InquiryForm
             key={defaultSubject + defaultMessage}

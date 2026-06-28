@@ -2,15 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { cormorant, inter } from "@/lib/fonts";
 import { site } from "@/lib/site";
 import { getSiteContent } from "@/data/settings";
-import { CartProvider } from "@/lib/cart-context";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CartDrawer from "@/components/CartDrawer";
 import "@/styles/globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getSiteContent();
-  const title = `${content.brandName} — Original Paintings & Prints`;
+  const title = `${content.brandName} — Portfolio`;
   return {
     metadataBase: new URL("https://farah-ramadan.com"),
     title: {
@@ -40,17 +38,13 @@ export default async function RootLayout({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "VisualArtsEvent",
-    name: content.brandName,
+    "@type": "Person",
+    name: site.artistName,
     description: content.seoDescription,
-    organizer: {
-      "@type": "Person",
-      name: site.artistName,
-      email: content.email,
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: content.location,
-      },
+    email: content.email,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: content.location,
     },
   };
 
@@ -61,20 +55,17 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <CartProvider>
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-charcoal focus:px-4 focus:py-2 focus:font-body focus:text-xs focus:uppercase focus:tracking-[0.2em] focus:text-canvas"
-          >
-            Skip to content
-          </a>
-          <Navbar brandName={content.brandName} />
-          <main id="main" className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-charcoal focus:px-4 focus:py-2 focus:font-body focus:text-xs focus:uppercase focus:tracking-[0.2em] focus:text-canvas"
+        >
+          Skip to content
+        </a>
+        <Navbar brandName={content.brandName} />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

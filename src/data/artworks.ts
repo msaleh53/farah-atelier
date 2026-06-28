@@ -13,12 +13,10 @@ function toArtwork(doc: PayloadArtwork): Artwork {
     category: doc.category,
     medium: doc.medium ?? '',
     dimensions: doc.dimensions ?? '',
-    availability: doc.availability,
     featured: Boolean(doc.featured),
     image: mediaUrl(doc.image, 'card'),
     imageAlt: doc.imageAlt ?? '',
     story: doc.story ?? '',
-    price: doc.price ?? null,
   }
 }
 
