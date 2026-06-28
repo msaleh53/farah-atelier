@@ -105,8 +105,6 @@ export const SiteSettings: GlobalConfig = {
           fields: [
             { name: 'galleryEyebrow', type: 'text' },
             { name: 'galleryIntro', type: 'textarea' },
-            { name: 'shopEyebrow', type: 'text' },
-            { name: 'shopIntro', type: 'textarea' },
             { name: 'contactEyebrow', type: 'text' },
             { name: 'contactIntro', type: 'textarea' },
             {

@@ -6,36 +6,23 @@ import { artworkCategories } from "@/data/taxonomies";
 import FilterBar from "@/components/FilterBar";
 import GalleryGrid from "@/components/GalleryGrid";
 
-const availabilityOptions = ["Available", "Reserved", "Sold"] as const;
-
 export default function GalleryView({ artworks }: { artworks: Artwork[] }) {
   const [category, setCategory] = useState("All");
-  const [availability, setAvailability] = useState("All");
 
   const filtered = useMemo(() => {
     return artworks.filter((a) => {
-      const matchCategory = category === "All" || a.category === category;
-      const matchAvailability =
-        availability === "All" ||
-        a.availability === availability.toLowerCase();
-      return matchCategory && matchAvailability;
+      return category === "All" || a.category === category;
     });
-  }, [artworks, category, availability]);
+  }, [artworks, category]);
 
   return (
     <div>
-      <div className="mb-10 flex flex-col gap-6 border-y border-charcoal/10 py-6 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-10 border-y border-charcoal/10 py-6">
         <FilterBar
           label="Filter by category"
           options={artworkCategories}
           active={category}
           onChange={setCategory}
-        />
-        <FilterBar
-          label="Filter by availability"
-          options={availabilityOptions}
-          active={availability}
-          onChange={setAvailability}
         />
       </div>
 

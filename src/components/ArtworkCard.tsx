@@ -2,12 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "@/types";
 
-const availabilityLabel: Record<Artwork["availability"], string> = {
-  available: "Available",
-  reserved: "Reserved",
-  sold: "Sold",
-};
-
 export default function ArtworkCard({
   artwork,
   priority = false,
@@ -38,12 +32,6 @@ export default function ArtworkCard({
               </span>
             </div>
           )}
-          <span
-            className="absolute left-4 top-4 bg-canvas/90 px-3 py-1 font-body text-[0.65rem] uppercase tracking-[0.2em] text-charcoal ring-1 ring-charcoal/5 backdrop-blur transition-opacity group-focus-visible:ring-2 group-focus-visible:ring-ochre"
-            aria-hidden={artwork.availability === "available" ? undefined : false}
-          >
-            {availabilityLabel[artwork.availability]}
-          </span>
         </div>
         <figcaption className="mt-4 flex items-baseline justify-between gap-4">
           <div>

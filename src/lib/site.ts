@@ -1,17 +1,17 @@
 export const site = {
-  name: "Atelier",
+  name: "Portfolio",
   artistName: "Farah Ramadan",
-  tagline: "Paintings, works on paper, and objects",
+  tagline: "Painting, drawing, and mixed media",
   location: "Amman, Jordan",
-  email: "studio@farah-ramadan.com",
+  email: "farah@example.com",
   instagram: "https://instagram.com",
   description:
-    "A premium artist portfolio and shop. Original paintings, limited prints, and commissioned works in a museum-quality presentation.",
+    "The portfolio of Farah Ramadan — a graduating fine art student based in Amman, Jordan.",
 };
 
 export const navLinks = [
   { href: "/gallery", label: "Gallery" },
-  { href: "/shop", label: "Shop" },
+  { href: "/journal", label: "Journal" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;

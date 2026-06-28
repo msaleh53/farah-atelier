@@ -8,7 +8,7 @@ import sharp from 'sharp'
 import { Users } from './src/payload/collections/Users'
 import { Media } from './src/payload/collections/Media'
 import { Artworks } from './src/payload/collections/Artworks'
-import { Products } from './src/payload/collections/Products'
+import { Posts } from './src/payload/collections/Posts'
 import { SiteSettings } from './src/payload/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -17,10 +17,10 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     meta: {
-      titleSuffix: '· Farah Atelier',
+      titleSuffix: '· Portfolio CMS',
     },
   },
-  collections: [Users, Media, Artworks, Products],
+  collections: [Users, Media, Artworks, Posts],
   globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

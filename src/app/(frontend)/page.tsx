@@ -13,9 +13,9 @@ import {
 } from "@/data/settings";
 import { site } from "@/lib/site";
 
-const FALLBACK_HOME_INTRO = `For two decades I have painted the thresholds of the Jordanian landscape — the moment a colour turns, the line where dune meets sky. My work moves between oil, ink and clay, but always returns to restraint: the fewest marks that still hold a feeling.
+const FALLBACK_HOME_INTRO = `I'm a final-year fine art student based in Amman, working in painting, drawing, and mixed media. My practice is rooted in close observation of the Jordanian landscape — its light, colour, and geology.
 
-Every work leaves the studio through conversation. I prefer to know where a painting is going, so each acquisition begins with a simple inquiry rather than a checkout.`;
+I'm currently preparing for my graduation exhibition and am open to conversations about commissions and collaboration.`;
 
 export default async function HomePage() {
   const [featuredAll, settings, content] = await Promise.all([
@@ -78,7 +78,7 @@ export default async function HomePage() {
                 href="/about"
                 className="inline-flex items-center justify-center border border-canvas/40 px-8 py-3.5 font-body text-xs uppercase tracking-[0.2em] text-canvas transition-colors duration-300 ease-editorial hover:bg-canvas hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-pigment"
               >
-                Read the Full Story
+                About Me
               </Link>
             </div>
           </div>
@@ -93,11 +93,11 @@ export default async function HomePage() {
             {content.home.closingHeading}
           </h2>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <Link href="/shop" className="btn-primary">
-              Browse the Shop
+            <Link href="/gallery" className="btn-primary">
+              View the Gallery
             </Link>
             <Link href="/contact" className="btn-outline">
-              Contact the Studio
+              Get in Touch
             </Link>
           </div>
         </Reveal>
