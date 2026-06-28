@@ -38,7 +38,7 @@ export const Artworks: CollectionConfig = {
       name: 'category',
       type: 'select',
       required: true,
-      options: ['Painting', 'Works on Paper', 'Mixed Media', 'Sculpture'],
+      options: ['Paintings', 'Drawings', 'Intaglio', 'Ceramics', 'Watercolor'],
     },
     { name: 'medium', type: 'text' },
     { name: 'dimensions', type: 'text' },
