@@ -551,7 +551,14 @@ export interface SiteSetting {
    * The bio paragraphs. Leave a blank line between paragraphs.
    */
   aboutBody?: string | null;
-  timeline?:
+  exhibitions?:
+    | {
+        year: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  volunteering?:
     | {
         year: string;
         text: string;
@@ -604,7 +611,14 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   homeIntro?: T;
   aboutLead?: T;
   aboutBody?: T;
-  timeline?:
+  exhibitions?:
+    | T
+    | {
+        year?: T;
+        text?: T;
+        id?: T;
+      };
+  volunteering?:
     | T
     | {
         year?: T;
