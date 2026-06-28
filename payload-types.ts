@@ -219,7 +219,7 @@ export interface Artwork {
    */
   slug?: string | null;
   year: number;
-  category: 'Painting' | 'Works on Paper' | 'Mixed Media' | 'Sculpture';
+  category: 'Paintings' | 'Drawings' | 'Intaglio' | 'Ceramics' | 'Watercolor';
   medium?: string | null;
   dimensions?: string | null;
   /**
