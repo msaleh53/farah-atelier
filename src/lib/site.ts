@@ -1,7 +1,7 @@
 export const site = {
   name: "Portfolio",
   artistName: "Farah Ramadan",
-  tagline: "Painting, drawing, and mixed media",
+  tagline: "Paintings, drawings, intaglio, ceramics, and watercolor",
   location: "Amman, Jordan",
   email: "farah@example.com",
   instagram: "https://instagram.com",

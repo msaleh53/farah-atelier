@@ -1,8 +1,9 @@
 export type ArtworkCategory =
-  | "Painting"
-  | "Works on Paper"
-  | "Mixed Media"
-  | "Sculpture";
+  | "Paintings"
+  | "Drawings"
+  | "Intaglio"
+  | "Ceramics"
+  | "Watercolor";
 
 export interface Artwork {
   id: string;

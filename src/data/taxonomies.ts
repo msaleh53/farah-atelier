@@ -3,14 +3,9 @@
 // pulling the database driver into the browser bundle.
 
 export const artworkCategories = [
-  'Painting',
-  'Works on Paper',
-  'Mixed Media',
-  'Sculpture',
-] as const
-
-export const productTypes = [
-  'Original',
-  'Limited Print',
-  'Open Edition Print',
+  'Paintings',
+  'Drawings',
+  'Intaglio',
+  'Ceramics',
+  'Watercolor',
 ] as const
