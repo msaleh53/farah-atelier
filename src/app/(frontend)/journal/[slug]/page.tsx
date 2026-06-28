@@ -81,14 +81,15 @@ export default async function JournalPostPage({
       </header>
 
       {post.coverImage && (
-        <div className="relative mx-auto mt-10 aspect-[16/9] max-w-4xl overflow-hidden bg-parchment">
+        <div className="mx-auto mt-10 max-w-4xl">
           <Image
             src={post.coverImage}
             alt={post.coverImageAlt}
-            fill
+            width={1200}
+            height={900}
             priority
             sizes="(max-width: 1024px) 100vw, 900px"
-            className="object-contain"
+            className="w-full h-auto"
           />
         </div>
       )}
