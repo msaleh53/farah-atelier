@@ -27,6 +27,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.r2.cloudflarestorage.com",
       },
+      {
+        // Payload serves media through its own endpoint and, because serverURL
+        // is set, returns absolute URLs on this host — next/image needs it
+        // explicitly allowlisted to render uploaded artwork on the live site.
+        protocol: "https",
+        hostname: "farah-atelier.vercel.app",
+      },
     ],
   },
 };
