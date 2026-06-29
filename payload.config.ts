@@ -14,8 +14,16 @@ import { SiteSettings } from './src/payload/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+
 export default buildConfig({
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
+  serverURL,
+  // Whitelist the deployment origin so Payload accepts the auth cookie on
+  // mutations (uploads/saves). Without this, the admin renders but client-side
+  // create/update POSTs come through unauthenticated → "You are not allowed to
+  // perform this action." Local dev is same-origin so it works without it.
+  cors: [serverURL],
+  csrf: [serverURL],
   admin: {
     user: Users.slug,
     meta: {
