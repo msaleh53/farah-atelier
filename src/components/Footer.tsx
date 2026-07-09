@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { navLinks, site } from "@/lib/site";
 import { getSiteContent } from "@/data/settings";
@@ -10,7 +11,16 @@ export default async function Footer() {
     <footer className="mt-24 border-t border-charcoal/10 bg-parchment">
       <div className="container-editorial grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <p className="font-heading text-2xl text-charcoal">{content.brandName}</p>
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/signature.png"
+              alt=""
+              width={14}
+              height={26}
+              className="h-[26px] w-auto"
+            />
+            <p className="font-heading text-2xl text-charcoal">{content.brandName}</p>
+          </div>
           <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-label-gray">
             {content.tagline}. Studio practice based in {content.location}.
           </p>
