@@ -31,10 +31,10 @@ export default function FilterBar({
             type="button"
             onClick={() => onChange(item)}
             aria-pressed={isActive}
-            className={`relative font-body text-xs uppercase tracking-[0.2em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-canvas ${
+            className={`rounded-full border px-[18px] py-[9px] font-body text-xs uppercase tracking-[0.2em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-canvas ${
               isActive
-                ? "text-charcoal after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-full after:bg-ochre"
-                : "text-label-gray hover:text-charcoal"
+                ? "border-charcoal bg-charcoal text-canvas"
+                : "border-charcoal/10 text-label-gray hover:text-charcoal"
             }`}
           >
             {item}
