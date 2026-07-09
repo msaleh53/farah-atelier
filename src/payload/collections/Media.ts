@@ -21,7 +21,7 @@ export const Media: CollectionConfig = {
     // Read/write under <project>/media. Served same-origin via /api/media/file/*.
     staticDir: 'media',
     imageSizes: [
-      // Gallery / shop / featured cards (4:5)
+      // Gallery / featured cards (4:5)
       { name: 'card', width: 800, height: 1000, position: 'centre' },
       // Home hero (4:5)
       { name: 'hero', width: 1200, height: 1500, position: 'centre' },
