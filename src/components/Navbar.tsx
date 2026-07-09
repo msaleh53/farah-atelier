@@ -38,18 +38,15 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
         className="container-editorial flex h-20 items-center justify-between"
         aria-label="Primary"
       >
-        <Link href="/" className="flex items-center gap-4">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/signature.png"
-            alt=""
-            width={35}
-            height={64}
-            className="h-16 w-auto"
+            src="/logo-farah-ramadan.png"
+            alt={brandName}
+            width={821}
+            height={312}
+            className="h-[76px] w-auto"
             priority
           />
-          <span className="font-heading text-2xl tracking-wide text-charcoal">
-            {brandName}
-          </span>
         </Link>
 
         {/* Desktop links */}
