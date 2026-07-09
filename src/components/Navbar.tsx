@@ -35,7 +35,7 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
       }`}
     >
       <nav
-        className="container-editorial flex h-20 items-center justify-between"
+        className="container-editorial flex h-28 items-center justify-between md:justify-normal"
         aria-label="Primary"
       >
         <Link href="/" className="flex items-center">
@@ -44,13 +44,13 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
             alt={brandName}
             width={821}
             height={312}
-            className="h-[76px] w-auto"
+            className="h-[108px] w-auto"
             priority
           />
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-10 md:flex">
+        <ul className="hidden items-center gap-10 md:ml-auto md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <Link
