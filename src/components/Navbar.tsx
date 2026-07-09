@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,11 +38,18 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
         className="container-editorial flex h-20 items-center justify-between"
         aria-label="Primary"
       >
-        <Link
-          href="/"
-          className="font-heading text-2xl tracking-wide text-charcoal"
-        >
-          {brandName}
+        <Link href="/" className="flex items-center gap-4">
+          <Image
+            src="/signature.png"
+            alt=""
+            width={35}
+            height={64}
+            className="h-16 w-auto"
+            priority
+          />
+          <span className="font-heading text-2xl tracking-wide text-charcoal">
+            {brandName}
+          </span>
         </Link>
 
         {/* Desktop links */}
