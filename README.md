@@ -1,58 +1,81 @@
-# Atelier — Artist Portfolio & Shop
+# Farah Atelier — Artist Portfolio
 
-A premium artist portfolio and inquiry-first shop with a museum/editorial aesthetic, built per the project PRD.
+A fine-art portfolio site with a museum/editorial aesthetic and an inquiry-first acquisition model — no online checkout, just a direct conversation with the studio.
 
 ## Stack
 
 - **Next.js 15** (App Router) · **React 19** · **TypeScript**
-- **Tailwind CSS** (design tokens for the full PRD palette)
+- **Payload CMS 3** (self-hosted, in-app) · **Postgres** via `@payloadcms/db-postgres`
+- **Tailwind CSS** (design tokens for the full palette)
 - **next/image** for optimized, responsive, lazy-loaded imagery
 - **next/font** — Cormorant Garamond (headings) + Inter (body/UI)
 
 ## Getting started
 
+Requires **Node 22** (see `.nvmrc`) and a reachable Postgres `DATABASE_URL` +
+`PAYLOAD_SECRET` in `.env.local`.
+
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run start    # serve the production build
-npm run lint     # eslint (next/core-web-vitals)
+npm run dev            # dev server — http://localhost:3000 (auto-picks 3001 if taken)
+npm run build           # production build — also typechecks + prerenders every route
+npm run start            # serve the production build
+npm run lint              # eslint (next/core-web-vitals)
+npm run seed               # idempotently seed Payload with sample artworks + Site Settings
+npm run generate:types      # regenerate payload-types.ts after schema changes
 ```
+
+There is no test suite — `npm run build` is the verification gate.
 
 ## Routes
 
-| Path               | Description                                        |
-| ------------------ | -------------------------------------------------- |
-| `/`                | Home — hero, featured works, artist intro, CTAs    |
-| `/gallery`         | Filterable artwork grid (category + availability)  |
-| `/gallery/[slug]`  | Artwork detail — image, metadata, story, inquiry   |
-| `/shop`            | Prints & originals, inquiry-first add-to-cart      |
-| `/about`           | Artist bio, materials, timeline                    |
-| `/contact`         | Tabbed inquiry + commission forms (URL-prefilled)  |
+| Path              | Description                                            |
+| ----------------- | ------------------------------------------------------- |
+| `/`               | Home — hero, featured works, artist intro, CTAs         |
+| `/gallery`        | Filterable artwork grid (category)                      |
+| `/gallery/[slug]` | Artwork detail — image, metadata, story, inquiry CTA     |
+| `/journal`        | Journal listing                                          |
+| `/journal/[slug]` | Journal post detail                                       |
+| `/about`          | Artist bio, materials, timeline                            |
+| `/contact`        | Tabbed inquiry + commission forms (URL-prefilled)            |
+| `/admin`          | Payload CMS admin                                              |
 
-## Commerce model (V1)
+## Content model
 
-Inquiry-first, no online payment:
+Content is authored in Payload CMS (mounted in-app at `/admin`) and read
+through `src/data/` helpers (`getFeaturedArtworks`, `getArtworkBySlug`,
+`getSiteSettings`, …), which query Payload's Local API and map documents onto
+the component-facing types in `src/types/index.ts`. Collections:
+`Users`, `Media`, `Artworks`, `Posts` (`src/payload/collections/`), plus the
+`SiteSettings` global (`src/payload/globals/`). Editing content in `/admin`
+triggers revalidation via `afterChange` hooks — no manual redeploy needed.
+
+## Inquiry-first model
+
+There is no checkout or payment. The flow is a direct conversation:
 
 ```
-Artwork / Print → Inquiry list → Request → Studio confirms → Manual sale
+Artwork → "Inquire about this work" → Contact form (prefilled) → Studio confirms manually
 ```
 
-The cart (`src/lib/cart-context.tsx`) persists to `localStorage`. "Request these works"
-deep-links to `/contact?inquiry=cart`, which prefills the message with a line-item
-summary. Artwork pages deep-link to `/contact?artwork=<slug>`.
+Artwork pages deep-link to `/contact?artwork=<slug>`; commission intent
+deep-links to `/contact?type=commission`.
 
 ## Project structure
 
 ```
 src/
-  app/         # routes, layout, sitemap, robots, not-found
-  components/  # Navbar, Footer, Hero, ArtworkCard, GalleryGrid,
-               # ProductCard, FilterBar, CartDrawer, forms, …
-  data/        # artworks + products (typed, swap for a CMS later)
-  lib/         # site config, fonts, price format, cart context
-  styles/      # global Tailwind layer + design-system utilities
-  types/       # shared domain types
+  app/
+    (frontend)/   # public site routes, layout
+    (payload)/    # Payload admin + REST/media API mount
+  components/     # Navbar, Footer, Hero, ArtworkCard, GalleryGrid,
+                  # FilterBar, PageHeader, SectionHeading, forms, …
+  data/           # Payload-backed content helpers (typed contract for components)
+  lib/            # site config, fonts, price format, Payload client, media URLs
+  payload/        # collections, globals, hooks
+  styles/         # global Tailwind layer + design-system utilities
+  types/          # shared domain types
+payload.config.ts  # Payload CMS config (Postgres, uploads, collections)
 ```
 
 ## Design system
@@ -65,12 +88,12 @@ Colors and fonts are defined as Tailwind tokens in `tailwind.config.ts`
 
 ## Accessibility & SEO
 
-Skip link, semantic landmarks, keyboard-operable nav/filters/cart/forms,
+Skip link, semantic landmarks, keyboard-operable nav/filters/forms,
 focus-visible rings, descriptive alt text, `prefers-reduced-motion` support,
 per-page metadata, JSON-LD structured data, sitemap and robots.
 
-## Future roadmap
+## Deployment
 
-- Sanity CMS for artworks/products
-- Real form submission + email/notifications
-- Payments integration
+Live on Vercel, with Neon (Postgres) and Cloudflare R2 (media storage) in
+production. Pushing to `main` deploys automatically via Vercel's GitHub
+integration.
