@@ -6,7 +6,7 @@ import { Field, inputClass } from "@/components/FormField";
 export interface InquiryFormProps {
   /** Pre-filled subject line, e.g. an artwork title. */
   defaultSubject?: string;
-  /** Pre-filled message body, e.g. a cart summary. */
+  /** Pre-filled message body, e.g. from an artwork or commission deep-link. */
   defaultMessage?: string;
 }
 
