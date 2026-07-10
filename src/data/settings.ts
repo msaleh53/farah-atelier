@@ -24,6 +24,8 @@ export interface SiteSettings {
   /** Resolved URL of the `hero` crop, or null when no image is set. */
   heroImage: string | null
   heroImageAlt: string | null
+  heroPrimaryCta: string | null
+  heroSecondaryCta: string | null
   /** Resolved URL of the `portrait` crop, or null. */
   artistPortrait: string | null
   artistPortraitAlt: string | null
@@ -47,6 +49,8 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     heroSubtitle: doc.heroSubtitle ?? null,
     heroImage: mediaUrl(doc.heroImage, 'hero') || null,
     heroImageAlt: doc.heroImageAlt ?? null,
+    heroPrimaryCta: doc.heroPrimaryCta ?? null,
+    heroSecondaryCta: doc.heroSecondaryCta ?? null,
     artistPortrait: mediaUrl(doc.artistPortrait, 'portrait') || null,
     artistPortraitAlt: doc.artistPortraitAlt ?? null,
     homeIntro: doc.homeIntro ?? null,
@@ -73,17 +77,40 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
 
 import { site } from '@/lib/site'
 
+export interface SocialLink {
+  platform: string
+  url: string
+}
+
 export interface SiteContent {
   brandName: string
   tagline: string
   location: string
   email: string
-  instagram: string
+  socialLinks: SocialLink[]
+  /** Resolved logo URL, or null when no upload is set. */
+  logo: string | null
   seoDescription: string
   gallery: { eyebrow: string; intro: string }
-  contact: { eyebrow: string; intro: string; responseTime: string; note: string }
-  home: { featuredEyebrow: string; featuredTitle: string; closingEyebrow: string; closingHeading: string }
+  contact: {
+    eyebrow: string
+    intro: string
+    responseTime: string
+    note: string
+    asideEyebrow: string
+    emailLabel: string
+    locationLabel: string
+    responseTimeLabel: string
+  }
+  home: {
+    featuredEyebrow: string
+    featuredTitle: string
+    introEyebrow: string
+    closingEyebrow: string
+    closingHeading: string
+  }
   about: { ctaHeading: string }
+  footer: { exploreLabel: string; studioLabel: string }
 }
 
 const DEFAULTS = {
@@ -96,11 +123,18 @@ const DEFAULTS = {
   contactResponseTime: 'Within two business days',
   contactNote:
     'I try to respond to all messages within two business days.',
+  contactAsideEyebrow: 'The studio',
+  contactEmailLabel: 'Email',
+  contactLocationLabel: 'Location',
+  contactResponseTimeLabel: 'Response time',
   homeFeaturedEyebrow: 'Selected works',
   homeFeaturedTitle: 'Featured',
+  homeIntroEyebrow: 'In the studio',
   homeClosingEyebrow: 'Say hello',
   homeClosingHeading: 'Interested in my work or want to collaborate? Get in touch.',
   aboutCtaHeading: 'Explore the work, or reach out to say hello.',
+  footerExploreLabel: 'Explore',
+  footerStudioLabel: 'Studio',
 } as const
 
 /** Use the CMS value when it's a non-empty string, otherwise the fallback. */
@@ -112,12 +146,21 @@ function pick(value: string | null | undefined, fallback: string): string {
 /** Resolved studio details + page copy, CMS over static defaults. */
 export async function getSiteContent(): Promise<SiteContent> {
   const doc = await getRawSettings()
+  const socialLinks: SocialLink[] =
+    doc?.socialLinks
+      ?.filter((link): link is { platform: string; url: string; id?: string | null } =>
+        Boolean(link.platform && link.url),
+      )
+      .map((link) => ({ platform: link.platform, url: link.url })) ??
+    (site.instagram ? [{ platform: 'Instagram', url: site.instagram }] : [])
+
   return {
     brandName: pick(doc?.brandName, site.name),
     tagline: pick(doc?.tagline, site.tagline),
     location: pick(doc?.location, site.location),
     email: pick(doc?.email, site.email),
-    instagram: pick(doc?.instagram, site.instagram),
+    socialLinks,
+    logo: mediaUrl(doc?.logo) || null,
     seoDescription: pick(doc?.seoDescription, site.description),
     gallery: {
       eyebrow: pick(doc?.galleryEyebrow, DEFAULTS.galleryEyebrow),
@@ -128,15 +171,24 @@ export async function getSiteContent(): Promise<SiteContent> {
       intro: pick(doc?.contactIntro, DEFAULTS.contactIntro),
       responseTime: pick(doc?.contactResponseTime, DEFAULTS.contactResponseTime),
       note: pick(doc?.contactNote, DEFAULTS.contactNote),
+      asideEyebrow: pick(doc?.contactAsideEyebrow, DEFAULTS.contactAsideEyebrow),
+      emailLabel: pick(doc?.contactEmailLabel, DEFAULTS.contactEmailLabel),
+      locationLabel: pick(doc?.contactLocationLabel, DEFAULTS.contactLocationLabel),
+      responseTimeLabel: pick(doc?.contactResponseTimeLabel, DEFAULTS.contactResponseTimeLabel),
     },
     home: {
       featuredEyebrow: pick(doc?.homeFeaturedEyebrow, DEFAULTS.homeFeaturedEyebrow),
       featuredTitle: pick(doc?.homeFeaturedTitle, DEFAULTS.homeFeaturedTitle),
+      introEyebrow: pick(doc?.homeIntroEyebrow, DEFAULTS.homeIntroEyebrow),
       closingEyebrow: pick(doc?.homeClosingEyebrow, DEFAULTS.homeClosingEyebrow),
       closingHeading: pick(doc?.homeClosingHeading, DEFAULTS.homeClosingHeading),
     },
     about: {
       ctaHeading: pick(doc?.aboutCtaHeading, DEFAULTS.aboutCtaHeading),
+    },
+    footer: {
+      exploreLabel: pick(doc?.footerExploreLabel, DEFAULTS.footerExploreLabel),
+      studioLabel: pick(doc?.footerStudioLabel, DEFAULTS.footerStudioLabel),
     },
   }
 }

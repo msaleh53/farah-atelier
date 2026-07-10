@@ -6,11 +6,15 @@ import { getSiteSettings } from "@/data/settings";
 // Fallbacks used until the studio's Site Settings are filled in.
 const FALLBACK_HEADLINE = "Quiet paintings for considered spaces.";
 const FALLBACK_SUBTITLE = `${site.artistName} works in oil, paper and clay, drawing on the light and geology of Jordan. Each piece is available to acquire through a direct, inquiry-first conversation with the studio.`;
+const FALLBACK_PRIMARY_CTA = "View the Gallery";
+const FALLBACK_SECONDARY_CTA = "Commission a Work";
 
 export default async function Hero() {
   const settings = await getSiteSettings();
   const headline = settings?.heroHeadline || FALLBACK_HEADLINE;
   const subtitle = settings?.heroSubtitle || FALLBACK_SUBTITLE;
+  const primaryCta = settings?.heroPrimaryCta || FALLBACK_PRIMARY_CTA;
+  const secondaryCta = settings?.heroSecondaryCta || FALLBACK_SECONDARY_CTA;
   const imageAlt = settings?.heroImageAlt || "Featured artwork from the studio.";
   // Already cropped to the locked 4:5 frame by the Media `hero` size variant.
   const imageUrl = settings?.heroImage ?? null;
@@ -28,10 +32,10 @@ export default async function Hero() {
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
             <Link href="/gallery" className="btn-primary">
-              View the Gallery
+              {primaryCta}
             </Link>
             <Link href="/contact" className="btn-outline">
-              Commission a Work
+              {secondaryCta}
             </Link>
           </div>
         </div>
