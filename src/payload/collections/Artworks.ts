@@ -35,6 +35,9 @@ export const Artworks: CollectionConfig = {
       max: new Date().getFullYear(),
     },
     {
+      // TODO(template): options are locked to fine-art categories. Needs to become
+      // per-client-vertical (e.g. web design portfolio, photography, product) before
+      // this collection can be reused as a generic template.
       name: 'category',
       type: 'select',
       required: true,

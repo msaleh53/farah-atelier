@@ -42,10 +42,10 @@ export default async function ContactPage({
         </Suspense>
 
         <aside className="lg:border-l lg:border-charcoal/10 lg:pl-12">
-          <p className="eyebrow mb-4">The studio</p>
+          <p className="eyebrow mb-4">{content.contact.asideEyebrow}</p>
           <dl className="space-y-5 font-body text-sm">
             <div>
-              <dt className="text-label-gray">Email</dt>
+              <dt className="text-label-gray">{content.contact.emailLabel}</dt>
               <dd className="mt-1">
                 <a
                   href={`mailto:${content.email}`}
@@ -56,11 +56,11 @@ export default async function ContactPage({
               </dd>
             </div>
             <div>
-              <dt className="text-label-gray">Location</dt>
+              <dt className="text-label-gray">{content.contact.locationLabel}</dt>
               <dd className="mt-1 text-charcoal">{content.location}</dd>
             </div>
             <div>
-              <dt className="text-label-gray">Response time</dt>
+              <dt className="text-label-gray">{content.contact.responseTimeLabel}</dt>
               <dd className="mt-1 text-charcoal">{content.contact.responseTime}</dd>
             </div>
           </dl>

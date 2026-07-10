@@ -64,7 +64,7 @@ export default async function HomePage() {
             />
           </div>
           <div className="order-1 md:order-2">
-            <p className="eyebrow text-ochre">In the studio</p>
+            <p className="eyebrow text-ochre">{content.home.introEyebrow}</p>
             <h2 className="mt-5 font-heading text-4xl font-light leading-tight sm:text-5xl">
               {site.artistName}
             </h2>

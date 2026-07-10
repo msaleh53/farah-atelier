@@ -11,20 +11,26 @@ export default async function Footer() {
     <footer className="mt-24 border-t border-charcoal/10 bg-parchment">
       <div className="container-editorial grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          <Image
-            src="/logo-farah-ramadan.png"
-            alt={content.brandName}
-            width={821}
-            height={312}
-            className="h-16 w-auto"
-          />
+          {content.logo ? (
+            <Image
+              src={content.logo}
+              alt={content.brandName}
+              width={821}
+              height={312}
+              className="h-16 w-auto"
+            />
+          ) : (
+            <p className="font-heading text-2xl font-light text-charcoal">
+              {content.brandName}
+            </p>
+          )}
           <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-label-gray">
             {content.tagline}. Studio practice based in {content.location}.
           </p>
         </div>
 
         <nav aria-label="Footer">
-          <p className="eyebrow mb-4">Explore</p>
+          <p className="eyebrow mb-4">{content.footer.exploreLabel}</p>
           <ul className="space-y-2.5">
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -40,23 +46,25 @@ export default async function Footer() {
         </nav>
 
         <div>
-          <p className="eyebrow mb-4">Studio</p>
+          <p className="eyebrow mb-4">{content.footer.studioLabel}</p>
           <ul className="space-y-2.5 font-body text-sm text-charcoal">
             <li>
               <a href={`mailto:${content.email}`} className="link-underline">
                 {content.email}
               </a>
             </li>
-            <li>
-              <a
-                href={content.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="link-underline"
-              >
-                Instagram
-              </a>
-            </li>
+            {content.socialLinks.map((link) => (
+              <li key={link.platform}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-underline"
+                >
+                  {link.platform}
+                </a>
+              </li>
+            ))}
             <li className="text-label-gray">{content.location}</li>
           </ul>
         </div>
