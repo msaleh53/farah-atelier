@@ -539,6 +539,8 @@ export interface SiteSetting {
   heroSubtitle?: string | null;
   heroImage?: (number | null) | Media;
   heroImageAlt?: string | null;
+  heroPrimaryCta?: string | null;
+  heroSecondaryCta?: string | null;
   /**
    * Shown beside the portrait on the home page. Leave a blank line between paragraphs.
    */
@@ -572,7 +574,22 @@ export interface SiteSetting {
   tagline?: string | null;
   location?: string | null;
   email?: string | null;
-  instagram?: string | null;
+  /**
+   * Shown in the footer, e.g. Instagram, Behance, LinkedIn.
+   */
+  socialLinks?:
+    | {
+        platform: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Shown in the navbar and footer.
+   */
+  logo?: (number | null) | Media;
+  footerExploreLabel?: string | null;
+  footerStudioLabel?: string | null;
   /**
    * Used as the site-wide search/social description.
    */
@@ -586,8 +603,13 @@ export interface SiteSetting {
    * The fine print under the contact details.
    */
   contactNote?: string | null;
+  contactAsideEyebrow?: string | null;
+  contactEmailLabel?: string | null;
+  contactLocationLabel?: string | null;
+  contactResponseTimeLabel?: string | null;
   homeFeaturedEyebrow?: string | null;
   homeFeaturedTitle?: string | null;
+  homeIntroEyebrow?: string | null;
   homeClosingEyebrow?: string | null;
   homeClosingHeading?: string | null;
   aboutCtaHeading?: string | null;
@@ -608,6 +630,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   heroSubtitle?: T;
   heroImage?: T;
   heroImageAlt?: T;
+  heroPrimaryCta?: T;
+  heroSecondaryCta?: T;
   homeIntro?: T;
   aboutLead?: T;
   aboutBody?: T;
@@ -629,7 +653,16 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   tagline?: T;
   location?: T;
   email?: T;
-  instagram?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  logo?: T;
+  footerExploreLabel?: T;
+  footerStudioLabel?: T;
   seoDescription?: T;
   galleryEyebrow?: T;
   galleryIntro?: T;
@@ -637,8 +670,13 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   contactIntro?: T;
   contactResponseTime?: T;
   contactNote?: T;
+  contactAsideEyebrow?: T;
+  contactEmailLabel?: T;
+  contactLocationLabel?: T;
+  contactResponseTimeLabel?: T;
   homeFeaturedEyebrow?: T;
   homeFeaturedTitle?: T;
+  homeIntroEyebrow?: T;
   homeClosingEyebrow?: T;
   homeClosingHeading?: T;
   aboutCtaHeading?: T;
