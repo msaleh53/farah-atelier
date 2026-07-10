@@ -14,7 +14,9 @@ import { SiteSettings } from './src/payload/globals/SiteSettings'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const serverURL =
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
 
 export default buildConfig({
   serverURL,
