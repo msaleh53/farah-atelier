@@ -52,7 +52,7 @@ export default async function HomePage() {
       </section>
 
       {/* Artist intro */}
-      <section className="bg-pigment text-canvas">
+      <section className="bg-sand text-charcoal">
         <div className="container-editorial grid items-center gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-28">
           <div className="relative order-2 aspect-[4/5] overflow-hidden bg-charcoal md:order-1">
             <Image
@@ -64,11 +64,11 @@ export default async function HomePage() {
             />
           </div>
           <div className="order-1 md:order-2">
-            <p className="eyebrow text-ochre">{content.home.introEyebrow}</p>
+            <p className="eyebrow text-charcoal/80">{content.home.introEyebrow}</p>
             <h2 className="mt-5 font-heading text-4xl font-light leading-tight sm:text-5xl">
               {site.artistName}
             </h2>
-            <div className="mt-6 space-y-4 font-body text-base leading-relaxed text-canvas/70">
+            <div className="mt-6 space-y-4 font-body text-base leading-relaxed text-charcoal/75">
               {introParagraphs.map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -76,7 +76,7 @@ export default async function HomePage() {
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center border border-canvas/40 px-8 py-3.5 font-body text-xs uppercase tracking-[0.2em] text-canvas transition-colors duration-300 ease-editorial hover:bg-canvas hover:text-charcoal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-pigment"
+                className="inline-flex items-center justify-center border border-charcoal/60 px-8 py-3.5 font-body text-xs uppercase tracking-[0.2em] text-charcoal transition-colors duration-300 ease-editorial hover:bg-charcoal hover:text-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-sand"
               >
                 About Me
               </Link>
