@@ -1,4 +1,7 @@
 import type { CollectionConfig } from 'payload'
+import { APIError } from 'payload'
+
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
 /**
  * Uploaded images. Stored on local disk (`media/`) for now; a
@@ -34,6 +37,27 @@ export const Media: CollectionConfig = {
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
     focalPoint: true,
+  },
+  // Payload 3's upload config has no built-in max-size option (the old
+  // express-fileupload `limits.fileSize` was dropped). Files reach here via
+  // clientUploads (direct browser → R2), so filesize is already known on the
+  // incoming doc — reject oversized ones before the doc is created.
+  hooks: {
+    beforeValidate: [
+      ({ data, operation }) => {
+        if (
+          (operation === 'create' || operation === 'update') &&
+          typeof data?.filesize === 'number' &&
+          data.filesize > MAX_FILE_SIZE_BYTES
+        ) {
+          throw new APIError(
+            `File exceeds the ${MAX_FILE_SIZE_BYTES / (1024 * 1024)}MB upload limit.`,
+            400,
+          )
+        }
+        return data
+      },
+    ],
   },
   fields: [
     {
