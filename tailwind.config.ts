@@ -15,6 +15,7 @@ const config: Config = {
         parchment: "#EAE5DA",
         ochre: "#C49A45",
         "label-gray": "#76726A",
+        sand: "#B8AD98",
       },
       fontFamily: {
         heading: ["var(--font-cormorant)", "serif"],
