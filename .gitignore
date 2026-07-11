@@ -51,3 +51,4 @@ build-tasks.md
 *\ 2
 *.sync-conflict-*
 
+.env*
