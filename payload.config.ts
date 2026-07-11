@@ -52,6 +52,10 @@ export default buildConfig({
           s3Storage({
             collections: { media: true },
             bucket: process.env.S3_BUCKET,
+            // Upload directly from the browser to R2, bypassing Vercel's 4.5MB
+            // serverless function body limit (Media.upload.limits.fileSize allows
+            // up to 10MB). Requires CORS on the R2 bucket to allow PUT from serverURL.
+            clientUploads: true,
             config: {
               endpoint: process.env.S3_ENDPOINT,
               region: process.env.S3_REGION || 'auto',
