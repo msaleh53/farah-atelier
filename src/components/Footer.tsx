@@ -11,19 +11,13 @@ export default async function Footer() {
     <footer className="mt-24 border-t border-charcoal/10 bg-parchment">
       <div className="container-editorial grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr]">
         <div>
-          {content.logo ? (
-            <Image
-              src={content.logo}
-              alt={content.brandName}
-              width={1315}
-              height={399}
-              className="h-16 w-auto"
-            />
-          ) : (
-            <p className="font-heading text-2xl font-light text-charcoal">
-              {content.brandName}
-            </p>
-          )}
+          <Image
+            src={content.logo || "/logo-farah-ramadan.png"}
+            alt={content.brandName}
+            width={1315}
+            height={399}
+            className="h-16 w-auto"
+          />
           <p className="mt-3 max-w-xs font-body text-sm leading-relaxed text-label-gray">
             {content.tagline}. Studio practice based in {content.location}.
           </p>
