@@ -6,7 +6,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, site } from "@/lib/site";
 
-export default function Navbar({ brandName = site.name }: { brandName?: string }) {
+export default function Navbar({
+  brandName = site.name,
+  logo,
+}: {
+  brandName?: string;
+  logo?: string | null;
+}) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,11 +46,11 @@ export default function Navbar({ brandName = site.name }: { brandName?: string }
       >
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo-farah-ramadan.png"
+            src={logo || "/logo-farah-ramadan.png"}
             alt={brandName}
-            width={821}
-            height={312}
-            className="h-[108px] w-auto"
+            width={1315}
+            height={399}
+            className="h-14 w-auto md:h-[108px]"
             priority
           />
         </Link>

@@ -61,7 +61,7 @@ export default async function RootLayout({
         >
           Skip to content
         </a>
-        <Navbar brandName={content.brandName} />
+        <Navbar brandName={content.brandName} logo={content.logo} />
         <main id="main" className="flex-1">
           {children}
         </main>
