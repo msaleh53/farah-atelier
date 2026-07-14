@@ -54,7 +54,7 @@ export default function ArtworkCard({
         type="button"
         onClick={onOpenLightbox}
         aria-label={`View ${artwork.title} full size`}
-        className="group block w-full text-left focus-visible:outline-none"
+        className="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
       >
         {figure}
       </button>
@@ -64,7 +64,7 @@ export default function ArtworkCard({
   return (
     <Link
       href={`/gallery/${artwork.slug}`}
-      className="group block focus-visible:outline-none"
+      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
     >
       {figure}
     </Link>

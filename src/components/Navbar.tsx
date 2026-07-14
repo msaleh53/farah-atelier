@@ -50,7 +50,7 @@ export default function Navbar({
             alt={brandName}
             width={1315}
             height={399}
-            className="h-[108px] w-auto"
+            className="h-14 w-auto md:h-[108px]"
             priority
           />
         </Link>
