@@ -15,8 +15,8 @@ export default async function Footer() {
             <Image
               src={content.logo}
               alt={content.brandName}
-              width={821}
-              height={312}
+              width={1315}
+              height={399}
               className="h-16 w-auto"
             />
           ) : (
