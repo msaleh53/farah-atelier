@@ -4,10 +4,13 @@ import ArtworkCard from "@/components/ArtworkCard";
 export default function GalleryGrid({
   artworks,
   priorityCount = 0,
+  onOpenLightbox,
 }: {
   artworks: Artwork[];
   /** Number of leading images to mark high-priority for LCP. */
   priorityCount?: number;
+  /** When provided, clicking a card opens the lightbox at that card's index. */
+  onOpenLightbox?: (index: number) => void;
 }) {
   if (artworks.length === 0) {
     return (
@@ -21,7 +24,11 @@ export default function GalleryGrid({
     <ul className="grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
       {artworks.map((artwork, i) => (
         <li key={artwork.id}>
-          <ArtworkCard artwork={artwork} priority={i < priorityCount} />
+          <ArtworkCard
+            artwork={artwork}
+            priority={i < priorityCount}
+            onOpenLightbox={onOpenLightbox ? () => onOpenLightbox(i) : undefined}
+          />
         </li>
       ))}
     </ul>
