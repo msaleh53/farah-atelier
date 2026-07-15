@@ -50,7 +50,22 @@ export default buildConfig({
     ...(process.env.S3_BUCKET
       ? [
           s3Storage({
-            collections: { media: true },
+            collections: {
+              // Serve reads straight from R2's public bucket URL instead of
+              // proxying every image through this Next/Payload function (which
+              // was booting a full Payload instance + DB connection per image
+              // request). Requires "Public access" enabled on the R2 bucket
+              // (Cloudflare dashboard → R2 → bucket → Settings) and its public
+              // URL set as S3_PUBLIC_URL. Until that env var is set, falls back
+              // to the original proxied behavior so this ships with zero risk.
+              media: process.env.S3_PUBLIC_URL
+                ? {
+                    disablePayloadAccessControl: true,
+                    generateFileURL: ({ filename, prefix }) =>
+                      `${process.env.S3_PUBLIC_URL}/${prefix ? `${prefix}/` : ''}${filename}`,
+                  }
+                : true,
+            },
             bucket: process.env.S3_BUCKET,
             // Upload directly from the browser to R2, bypassing Vercel's 4.5MB
             // serverless function body limit (Media.upload.limits.fileSize allows
