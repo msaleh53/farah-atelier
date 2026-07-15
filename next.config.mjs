@@ -28,6 +28,12 @@ const nextConfig = {
         hostname: "*.r2.cloudflarestorage.com",
       },
       {
+        // R2's "Public Development URL" (Settings → Public access), used by
+        // generateFileURL in payload.config.ts once S3_PUBLIC_URL is set.
+        protocol: "https",
+        hostname: "*.r2.dev",
+      },
+      {
         // Payload serves media through its own endpoint and, because serverURL
         // is set, returns absolute URLs on this host — next/image needs it
         // explicitly allowlisted to render uploaded artwork on the live site.
