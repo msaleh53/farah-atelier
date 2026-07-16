@@ -34,11 +34,22 @@ const nextConfig = {
         hostname: "*.r2.dev",
       },
       {
+        // R2 custom domain for the bucket's public reads (Settings → Public
+        // access → Custom Domains), set as S3_PUBLIC_URL in production.
+        protocol: "https",
+        hostname: "media.farahramadan.art",
+      },
+      {
         // Payload serves media through its own endpoint and, because serverURL
         // is set, returns absolute URLs on this host — next/image needs it
         // explicitly allowlisted to render uploaded artwork on the live site.
         protocol: "https",
         hostname: "farah-atelier.vercel.app",
+      },
+      {
+        // Production custom domain.
+        protocol: "https",
+        hostname: "farahramadan.art",
       },
     ],
   },
