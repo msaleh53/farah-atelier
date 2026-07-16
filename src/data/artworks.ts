@@ -42,6 +42,11 @@ export async function getFeaturedArtworks(): Promise<Artwork[]> {
     limit: 100,
     pagination: false,
   })
+  // Fall back to the latest works so the homepage never renders an empty
+  // "Featured" section before an editor has flagged anything in /admin.
+  if (docs.length === 0) {
+    return getAllArtworks()
+  }
   return docs.map(toArtwork)
 }
 

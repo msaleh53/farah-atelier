@@ -35,6 +35,18 @@ const FALLBACK_VOLUNTEERING: CVItem[] = [
   { year: "2024", text: "[Organisation] — [Role], Amman." },
 ];
 
+// `year` is free text in /admin (e.g. "2026" or a range like "2024 - 2026"),
+// so entries aren't guaranteed to be entered in order — sort by the most
+// recent 4-digit year found in the string, newest first.
+function latestYear(year: string | null): number {
+  const matches = year?.match(/\d{4}/g);
+  return matches ? Math.max(...matches.map(Number)) : 0;
+}
+
+function byYearDescending(a: CVItem, b: CVItem): number {
+  return latestYear(b.year) - latestYear(a.year);
+}
+
 export default async function AboutPage() {
   const [settings, content] = await Promise.all([
     getSiteSettings(),
@@ -46,14 +58,16 @@ export default async function AboutPage() {
     settings?.artistPortraitAlt || `${site.artistName} working in the studio.`;
   const lead = settings?.aboutLead || FALLBACK_LEAD;
   const bodyParagraphs = toParagraphs(settings?.aboutBody || FALLBACK_BODY);
-  const exhibitions =
+  const exhibitions = (
     settings?.exhibitions && settings.exhibitions.length > 0
       ? settings.exhibitions
-      : FALLBACK_EXHIBITIONS;
-  const volunteering =
+      : FALLBACK_EXHIBITIONS
+  ).toSorted(byYearDescending);
+  const volunteering = (
     settings?.volunteering && settings.volunteering.length > 0
       ? settings.volunteering
-      : FALLBACK_VOLUNTEERING;
+      : FALLBACK_VOLUNTEERING
+  ).toSorted(byYearDescending);
 
   return (
     <>
