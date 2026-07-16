@@ -124,7 +124,7 @@ export default async function ArtworkDetailPage({
           <h2 className="font-heading text-2xl font-light text-charcoal">
             On {artwork.title}
           </h2>
-          <p className="mt-5 font-body text-lg leading-relaxed text-charcoal/80">
+          <p className="mt-5 border-l-2 border-teal py-1 pl-5 font-body text-lg leading-relaxed text-charcoal/80">
             {artwork.story}
           </p>
         </section>

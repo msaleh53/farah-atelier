@@ -72,7 +72,7 @@ export default async function JournalPage() {
                           {post.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="font-body text-[0.6rem] uppercase tracking-[0.2em] text-label-gray"
+                              className="font-body text-[0.6rem] uppercase tracking-[0.2em] text-teal"
                             >
                               {tag}
                             </span>

@@ -9,13 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#F4F1EA",
+        canvas: "#F2EEE3",
         charcoal: "#1C1B1A",
         pigment: "#2A2825",
         parchment: "#EAE5DA",
-        ochre: "#C49A45",
+        ochre: "#A9823D",
         "label-gray": "#76726A",
         sand: "#B8AD98",
+        // Sourced from the sage shawl in "sondos" — reserved for the Journal
+        // (tags, story pull-quotes), kept separate from the gallery's ochre.
+        teal: "#4A6358",
+        "teal-soft": "#8FA69C",
       },
       fontFamily: {
         heading: ["var(--font-cormorant)", "serif"],
