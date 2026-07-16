@@ -118,7 +118,7 @@ export default function Lightbox({
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:right-8 sm:top-8"
+        className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:right-8 sm:top-8"
       >
         <span aria-hidden="true" className="text-2xl leading-none">
           ×
@@ -131,7 +131,7 @@ export default function Lightbox({
             type="button"
             onClick={() => onNavigate(prevIndex)}
             aria-label="Previous artwork"
-            className="absolute left-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:left-6"
+            className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:left-6"
           >
             <span aria-hidden="true" className="text-3xl leading-none">
               ‹
@@ -141,7 +141,7 @@ export default function Lightbox({
             type="button"
             onClick={() => onNavigate(nextIndex)}
             aria-label="Next artwork"
-            className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:right-6"
+            className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal sm:right-6"
           >
             <span aria-hidden="true" className="text-3xl leading-none">
               ›
@@ -150,18 +150,30 @@ export default function Lightbox({
         </>
       ) : null}
 
-      <div className="relative aspect-[4/5] h-[55vh] max-h-[600px] max-w-[90vw]">
-        {artwork.image ? (
+      <div className="flex max-h-[80vh] max-w-[90vw] items-center justify-center">
+        {artwork.imageFull ? (
           <Image
-            src={artwork.image}
+            src={artwork.imageFull.url}
             alt={artwork.imageAlt}
-            fill
+            width={artwork.imageFull.width}
+            height={artwork.imageFull.height}
             sizes="90vw"
-            className="object-contain"
+            className="max-h-[80vh] w-auto max-w-[90vw] object-contain"
             priority
           />
+        ) : artwork.image ? (
+          <div className="relative aspect-[4/5] h-[55vh] max-h-[600px]">
+            <Image
+              src={artwork.image}
+              alt={artwork.imageAlt}
+              fill
+              sizes="90vw"
+              className="object-contain"
+              priority
+            />
+          </div>
         ) : (
-          <div className="flex h-full items-center justify-center bg-parchment">
+          <div className="flex aspect-[4/5] h-[55vh] max-h-[600px] items-center justify-center bg-parchment">
             <span className="font-body text-xs uppercase tracking-[0.2em] text-label-gray">
               Image coming soon
             </span>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import ArtworkDetailImage from "@/components/ArtworkDetailImage";
 import { getArtworkBySlug, getArtworkSlugs } from "@/data/artworks";
 import { site } from "@/lib/site";
 
@@ -82,24 +82,7 @@ export default async function ArtworkDetailPage({
 
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
         {/* Image */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-parchment">
-          {artwork.image ? (
-            <Image
-              src={artwork.image}
-              alt={artwork.imageAlt}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 60vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="font-body text-xs uppercase tracking-[0.2em] text-label-gray">
-                Image coming soon
-              </span>
-            </div>
-          )}
-        </div>
+        <ArtworkDetailImage artwork={artwork} />
 
         {/* Details */}
         <div className="lg:sticky lg:top-28 lg:self-start">

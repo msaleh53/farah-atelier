@@ -14,7 +14,12 @@
 export type MediaSize = 'card' | 'hero' | 'portrait' | 'thumbnail'
 
 type SizeMap = Partial<Record<string, { url?: string | null } | null>>
-type PopulatedMedia = { url?: string | null; sizes?: SizeMap | null }
+type PopulatedMedia = {
+  url?: string | null
+  width?: number | null
+  height?: number | null
+  sizes?: SizeMap | null
+}
 
 export function mediaUrl(
   image: unknown,
@@ -28,4 +33,23 @@ export function mediaUrl(
     if (sized) return sized
   }
   return media.url ?? ''
+}
+
+export interface FullImage {
+  url: string
+  width: number
+  height: number
+}
+
+/**
+ * The original, uncropped upload plus its true dimensions — unlike every
+ * named size in `imageSizes` (Media.ts), which are all baked 4:5 crops for
+ * grid/hero tiling. Surfaces that need to show an artwork's real composition
+ * (the detail page, the lightbox) should use this instead of `mediaUrl`.
+ */
+export function mediaFull(image: unknown): FullImage | null {
+  if (!image || typeof image !== 'object') return null
+  const media = image as PopulatedMedia
+  if (!media.url || !media.width || !media.height) return null
+  return { url: media.url, width: media.width, height: media.height }
 }

@@ -1,5 +1,5 @@
 import { getPayloadClient } from '@/lib/payload'
-import { mediaUrl } from '@/lib/media'
+import { mediaUrl, mediaFull } from '@/lib/media'
 import type { Artwork as PayloadArtwork } from '@payload-types'
 import type { Artwork } from '@/types'
 
@@ -15,6 +15,7 @@ function toArtwork(doc: PayloadArtwork): Artwork {
     dimensions: doc.dimensions ?? '',
     featured: Boolean(doc.featured),
     image: mediaUrl(doc.image, 'card'),
+    imageFull: mediaFull(doc.image),
     imageAlt: doc.imageAlt ?? '',
     story: doc.story ?? '',
   }

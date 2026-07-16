@@ -15,6 +15,8 @@ export interface Artwork {
   dimensions: string;
   featured: boolean;
   image: string;
+  /** Original, uncropped upload + true dimensions — for the detail page and lightbox. */
+  imageFull: { url: string; width: number; height: number } | null;
   imageAlt: string;
   story: string;
 }
