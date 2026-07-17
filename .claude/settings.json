@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(artifact-design)",
+      "Skill(artifact-design:*)",
+      "WebFetch(domain:share.icloud.com)",
+      "Bash(vercel project *)",
+      "Bash(vercel domains *)",
+      "Bash(lsof -i :3000 -sTCP:LISTEN)",
+      "Bash(lsof -i :3001 -sTCP:LISTEN)",
+      "Bash(kill -9 13697 17295)",
+      "Bash(lsof -i :3000 -sTCP:LISTEN -t)",
+      "Bash(xargs -r kill -9)",
+      "Bash(lsof -i :3001 -sTCP:LISTEN -t)",
+      "Bash(lsof -ti:3000,3001)",
+      "Bash(ps -p 17867 -o pid,command)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "Bash(ps -p 17867 -o pid,etime,command)",
+      "Bash(PORT=3005 npm run dev)",
+      "Bash(disown)",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(lsof -ti:3005)",
+      "Bash(xargs -r kill)"
+    ]
+  }
+}

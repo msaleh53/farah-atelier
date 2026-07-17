@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import Script from "next/script";
 import { Field, inputClass } from "@/components/FormField";
 
 export interface InquiryFormProps {
@@ -10,17 +11,36 @@ export interface InquiryFormProps {
   defaultMessage?: string;
 }
 
+type Status = "idle" | "submitting" | "success" | "error";
+
 export default function InquiryForm({
   defaultSubject = "",
   defaultMessage = "",
 }: InquiryFormProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState(defaultSubject);
   const [message, setMessage] = useState(defaultMessage);
 
-  if (submitted) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("submitting");
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  if (status === "success") {
     return (
       <div className="border border-charcoal/15 bg-parchment p-8 text-center">
         <p className="font-heading text-2xl text-charcoal">Inquiry received</p>
@@ -34,14 +54,13 @@ export default function InquiryForm({
   }
 
   return (
-    <form
-      noValidate
-      onSubmit={(e) => {
-        e.preventDefault();
-        setSubmitted(true);
-      }}
-      className="space-y-6"
-    >
+    <form noValidate onSubmit={handleSubmit} className="space-y-6">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+      />
+      <input type="hidden" name="type" value="inquiry" />
       <div className="grid gap-6 sm:grid-cols-2">
         <Field id="inq-name" label="Name" required>
           <input
@@ -93,8 +112,25 @@ export default function InquiryForm({
         />
       </Field>
 
-      <button type="submit" className="btn-primary w-full sm:w-auto">
-        Send Inquiry
+      <div
+        className="cf-turnstile"
+        data-sitekey="0x4AAAAAAD3nuFJuIftIk0G7"
+        data-action="turnstile-spin-v2"
+      />
+
+      {status === "error" ? (
+        <p className="border border-charcoal/15 bg-parchment px-4 py-3 font-body text-sm text-charcoal">
+          Something went wrong sending your message.{" "}
+          <span className="text-ochre">Please try again.</span>
+        </p>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={status === "submitting"}
+        className="btn-primary w-full disabled:opacity-60 sm:w-auto"
+      >
+        {status === "submitting" ? "Sending…" : "Send Inquiry"}
       </button>
     </form>
   );

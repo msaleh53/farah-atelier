@@ -3,7 +3,7 @@ export const site = {
   artistName: "Farah Ramadan",
   tagline: "Paintings, drawings, intaglio, ceramics, and watercolor",
   location: "Amman, Jordan",
-  email: "farah@example.com",
+  email: "studio@farahramadan.art",
   instagram: "https://instagram.com",
   description:
     "The portfolio of Farah Ramadan — a graduating fine art student based in Amman, Jordan.",
