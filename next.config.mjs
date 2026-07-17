@@ -47,9 +47,16 @@ const nextConfig = {
         hostname: "farah-atelier.vercel.app",
       },
       {
-        // Production custom domain.
+        // Production custom domain. www is canonical (apex redirects to it,
+        // and NEXT_PUBLIC_SERVER_URL is set to the www host) — keep both so
+        // Payload's proxied-media fallback (when S3_PUBLIC_URL is unset)
+        // doesn't break images on whichever host serverURL resolves to.
         protocol: "https",
         hostname: "farahramadan.art",
+      },
+      {
+        protocol: "https",
+        hostname: "www.farahramadan.art",
       },
     ],
   },

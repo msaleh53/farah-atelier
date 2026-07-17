@@ -95,5 +95,8 @@ per-page metadata, JSON-LD structured data, sitemap and robots.
 ## Deployment
 
 Live on Vercel, with Neon (Postgres) and Cloudflare R2 (media storage) in
-production. Pushing to `main` deploys automatically via Vercel's GitHub
-integration.
+production, on the custom domain `www.farahramadan.art`. Pushing to `main`
+deploys automatically via Vercel's GitHub integration. Required env vars,
+non-obvious build/runtime gotchas (sharp, importMap, CORS/CSRF, image hosts),
+and the custom-domain checklist are documented in `DEPLOYMENT.md`. Contact
+form email + bot protection setup is in `EMAIL_SETUP.md`.
