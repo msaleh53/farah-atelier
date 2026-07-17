@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import Script from "next/script";
+import { useRef, useState, type FormEvent } from "react";
 import { Field, inputClass } from "@/components/FormField";
+import TurnstileWidget, {
+  type TurnstileWidgetHandle,
+} from "@/components/TurnstileWidget";
 
 const mediums = ["Oil painting", "Works on paper", "Mixed media", "Sculpture", "Unsure"];
 const budgets = ["Under 500 JOD", "500–1,500 JOD", "1,500–3,000 JOD", "3,000+ JOD"];
@@ -13,6 +15,7 @@ export default function CommissionForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,6 +31,7 @@ export default function CommissionForm() {
       setStatus("success");
     } catch {
       setStatus("error");
+      turnstileRef.current?.reset();
     }
   }
 
@@ -48,11 +52,6 @@ export default function CommissionForm() {
 
   return (
     <form noValidate onSubmit={handleSubmit} className="space-y-6">
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-        async
-        defer
-      />
       <input type="hidden" name="type" value="commission" />
       <div className="grid gap-6 sm:grid-cols-2">
         <Field id="com-name" label="Name" required>
@@ -123,11 +122,7 @@ export default function CommissionForm() {
         />
       </Field>
 
-      <div
-        className="cf-turnstile"
-        data-sitekey="0x4AAAAAAD3nuFJuIftIk0G7"
-        data-action="turnstile-spin-v2"
-      />
+      <TurnstileWidget ref={turnstileRef} />
 
       {status === "error" ? (
         <p className="border border-charcoal/15 bg-parchment px-4 py-3 font-body text-sm text-charcoal">

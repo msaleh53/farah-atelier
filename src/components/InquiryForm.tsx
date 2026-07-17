@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import Script from "next/script";
+import { useRef, useState, type FormEvent } from "react";
 import { Field, inputClass } from "@/components/FormField";
+import TurnstileWidget, {
+  type TurnstileWidgetHandle,
+} from "@/components/TurnstileWidget";
 
 export interface InquiryFormProps {
   /** Pre-filled subject line, e.g. an artwork title. */
@@ -22,6 +24,7 @@ export default function InquiryForm({
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState(defaultSubject);
   const [message, setMessage] = useState(defaultMessage);
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -37,6 +40,7 @@ export default function InquiryForm({
       setStatus("success");
     } catch {
       setStatus("error");
+      turnstileRef.current?.reset();
     }
   }
 
@@ -55,11 +59,6 @@ export default function InquiryForm({
 
   return (
     <form noValidate onSubmit={handleSubmit} className="space-y-6">
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-        async
-        defer
-      />
       <input type="hidden" name="type" value="inquiry" />
       <div className="grid gap-6 sm:grid-cols-2">
         <Field id="inq-name" label="Name" required>
@@ -112,11 +111,7 @@ export default function InquiryForm({
         />
       </Field>
 
-      <div
-        className="cf-turnstile"
-        data-sitekey="0x4AAAAAAD3nuFJuIftIk0G7"
-        data-action="turnstile-spin-v2"
-      />
+      <TurnstileWidget ref={turnstileRef} />
 
       {status === "error" ? (
         <p className="border border-charcoal/15 bg-parchment px-4 py-3 font-body text-sm text-charcoal">
