@@ -37,6 +37,9 @@ yarn-error.log*
 # playwright mcp test artifacts
 /.playwright-mcp/
 
+# local design-critique snapshots (impeccable skill)
+/.impeccable/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
