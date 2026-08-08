@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { getSiteSettings } from "@/data/settings";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 // Fallbacks used until the studio's Site Settings are filled in.
 const FALLBACK_HEADLINE = "Quiet paintings for considered spaces.";
@@ -50,6 +51,8 @@ export default async function Hero() {
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
+                placeholder="blur"
+                blurDataURL={shimmerBlurDataURL}
               />
             ) : (
               <div className="flex h-full items-center justify-center">

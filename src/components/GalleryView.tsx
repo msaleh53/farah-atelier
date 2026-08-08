@@ -28,7 +28,11 @@ export default function GalleryView({ artworks }: { artworks: Artwork[] }) {
         />
       </div>
 
-      <p className="mb-8 font-body text-xs uppercase tracking-[0.2em] text-label-gray">
+      <p
+        role="status"
+        aria-live="polite"
+        className="mb-8 font-body text-xs uppercase tracking-[0.2em] text-label-gray"
+      >
         {filtered.length} {filtered.length === 1 ? "work" : "works"}
       </p>
 

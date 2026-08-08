@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "@/types";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 const SWIPE_THRESHOLD_PX = 50;
 
@@ -158,6 +159,8 @@ export default function Lightbox({
             width={artwork.imageFull.width}
             height={artwork.imageFull.height}
             sizes="90vw"
+            placeholder="blur"
+            blurDataURL={shimmerBlurDataURL}
             className="max-h-[80vh] w-auto max-w-[90vw] object-contain"
             priority
           />
@@ -168,6 +171,8 @@ export default function Lightbox({
               alt={artwork.imageAlt}
               fill
               sizes="90vw"
+              placeholder="blur"
+              blurDataURL={shimmerBlurDataURL}
               className="object-contain"
               priority
             />

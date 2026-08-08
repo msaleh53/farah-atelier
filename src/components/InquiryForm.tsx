@@ -20,6 +20,7 @@ export default function InquiryForm({
   defaultMessage = "",
 }: InquiryFormProps) {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState(defaultSubject);
@@ -36,9 +37,21 @@ export default function InquiryForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(
+          typeof body?.error === "string"
+            ? body.error
+            : "Something went wrong sending your message. Please try again.",
+        );
+      }
       setStatus("success");
-    } catch {
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong sending your message. Please try again.",
+      );
       setStatus("error");
       turnstileRef.current?.reset();
     }
@@ -115,8 +128,7 @@ export default function InquiryForm({
 
       {status === "error" ? (
         <p className="border border-charcoal/15 bg-parchment px-4 py-3 font-body text-sm text-charcoal">
-          Something went wrong sending your message.{" "}
-          <span className="text-ochre">Please try again.</span>
+          {errorMessage}
         </p>
       ) : null}
 

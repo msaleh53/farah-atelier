@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { getPostBySlug, getPostSlugs } from "@/data/posts";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 export async function generateStaticParams() {
   const slugs = await getPostSlugs();
@@ -89,6 +90,8 @@ export default async function JournalPostPage({
             height={900}
             priority
             sizes="(max-width: 1024px) 100vw, 900px"
+            placeholder="blur"
+            blurDataURL={shimmerBlurDataURL}
             className="w-full h-auto"
           />
         </div>

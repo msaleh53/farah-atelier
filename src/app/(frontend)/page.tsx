@@ -12,6 +12,7 @@ import {
   FALLBACK_ARTIST_PORTRAIT,
 } from "@/data/settings";
 import { site } from "@/lib/site";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 const FALLBACK_HOME_INTRO = `I'm a final-year fine art student based in Amman, working in painting, drawing, and mixed media. My practice is rooted in close observation of the Jordanian landscape — its light, colour, and geology.
 
@@ -52,7 +53,7 @@ export default async function HomePage() {
       </section>
 
       {/* Artist intro */}
-      <section className="bg-sand text-charcoal">
+      <section className="bg-parchment text-charcoal">
         <div className="container-editorial grid items-center gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-28">
           <div className="relative order-2 aspect-[4/5] overflow-hidden bg-charcoal md:order-1">
             <Image
@@ -60,6 +61,8 @@ export default async function HomePage() {
               alt={portraitAlt}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
+              placeholder="blur"
+              blurDataURL={shimmerBlurDataURL}
               className="object-cover"
             />
           </div>
@@ -76,7 +79,7 @@ export default async function HomePage() {
             <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center border border-charcoal/60 px-8 py-3.5 font-body text-xs uppercase tracking-[0.2em] text-charcoal transition-colors duration-300 ease-editorial hover:bg-charcoal hover:text-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-sand"
+                className="inline-flex items-center justify-center border border-charcoal/60 px-8 py-3.5 font-body text-xs uppercase tracking-[0.2em] text-charcoal transition-colors duration-300 ease-editorial hover:bg-charcoal hover:text-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-parchment"
               >
                 About Me
               </Link>

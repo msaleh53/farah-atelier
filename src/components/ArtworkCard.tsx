@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "@/types";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 export default function ArtworkCard({
   artwork,
@@ -22,7 +23,9 @@ export default function ArtworkCard({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             priority={priority}
-            className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.04]"
+            placeholder="blur"
+            blurDataURL={shimmerBlurDataURL}
+            className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.02]"
           />
         ) : (
           <div className="flex h-full items-center justify-center">

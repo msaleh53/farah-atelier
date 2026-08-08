@@ -127,6 +127,13 @@ export default async function ArtworkDetailPage({
           <p className="mt-5 border-l-2 border-teal py-1 pl-5 font-body text-lg leading-relaxed text-charcoal/80">
             {artwork.story}
           </p>
+          <p className="mt-8 font-body text-base text-charcoal/80">
+            Interested in this piece?{" "}
+            <Link href={`/contact?artwork=${artwork.slug}`} className="link-underline text-charcoal">
+              Get in touch
+            </Link>
+            .
+          </p>
         </section>
       ) : null}
     </article>

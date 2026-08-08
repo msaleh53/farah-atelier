@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Lightbox from "@/components/Lightbox";
 import type { Artwork } from "@/types";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 /**
  * The detail-page hero image. Renders at the artwork's true aspect ratio
@@ -42,6 +43,8 @@ export default function ArtworkDetailImage({ artwork }: { artwork: Artwork }) {
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 60vw"
+            placeholder="blur"
+            blurDataURL={shimmerBlurDataURL}
             className="object-contain transition-transform duration-700 ease-editorial group-hover:scale-[1.02]"
           />
         ) : (
@@ -52,6 +55,8 @@ export default function ArtworkDetailImage({ artwork }: { artwork: Artwork }) {
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 60vw"
+              placeholder="blur"
+              blurDataURL={shimmerBlurDataURL}
               className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.02]"
             />
           </div>

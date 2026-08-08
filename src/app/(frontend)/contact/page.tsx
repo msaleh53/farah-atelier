@@ -41,7 +41,7 @@ export default async function ContactPage({
           <ContactView prefillArtwork={prefillArtwork} />
         </Suspense>
 
-        <aside className="lg:border-l lg:border-charcoal/10 lg:pl-12">
+        <aside className="lg:sticky lg:top-28 lg:self-start lg:border-l lg:border-charcoal/10 lg:pl-12">
           <p className="eyebrow mb-4">{content.contact.asideEyebrow}</p>
           <dl className="space-y-5 font-body text-sm">
             <div>

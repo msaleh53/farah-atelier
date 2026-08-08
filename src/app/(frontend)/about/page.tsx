@@ -10,6 +10,7 @@ import {
   type CVItem,
 } from "@/data/settings";
 import { site } from "@/lib/site";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getSiteContent();
@@ -25,15 +26,6 @@ const FALLBACK_LEAD =
 const FALLBACK_BODY = `My practice is rooted in observation — long sessions in front of a subject until something unexpected reveals itself. I work primarily in oil and ink, but I'm drawn to bringing in materials that carry their own history: ash, sand, torn paper.
 
 I'm currently preparing for my graduation exhibition and exploring what comes next. I'm open to conversations about collaboration, residencies, and commissions.`;
-
-const FALLBACK_EXHIBITIONS: CVItem[] = [
-  { year: "2025", text: "Graduation exhibition — [Venue], Amman." },
-  { year: "2023", text: "Group exhibition — [Gallery Name], Amman." },
-];
-
-const FALLBACK_VOLUNTEERING: CVItem[] = [
-  { year: "2024", text: "[Organisation] — [Role], Amman." },
-];
 
 // `year` is free text in /admin (e.g. "2026" or a range like "2024 - 2026"),
 // so entries aren't guaranteed to be entered in order — sort by the most
@@ -58,16 +50,8 @@ export default async function AboutPage() {
     settings?.artistPortraitAlt || `${site.artistName} working in the studio.`;
   const lead = settings?.aboutLead || FALLBACK_LEAD;
   const bodyParagraphs = toParagraphs(settings?.aboutBody || FALLBACK_BODY);
-  const exhibitions = (
-    settings?.exhibitions && settings.exhibitions.length > 0
-      ? settings.exhibitions
-      : FALLBACK_EXHIBITIONS
-  ).toSorted(byYearDescending);
-  const volunteering = (
-    settings?.volunteering && settings.volunteering.length > 0
-      ? settings.volunteering
-      : FALLBACK_VOLUNTEERING
-  ).toSorted(byYearDescending);
+  const exhibitions = (settings?.exhibitions ?? []).toSorted(byYearDescending);
+  const volunteering = (settings?.volunteering ?? []).toSorted(byYearDescending);
 
   return (
     <>
@@ -81,6 +65,8 @@ export default async function AboutPage() {
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 45vw"
+            placeholder="blur"
+            blurDataURL={shimmerBlurDataURL}
             className="object-cover"
           />
         </div>
@@ -96,44 +82,48 @@ export default async function AboutPage() {
       </section>
 
       {/* Exhibitions */}
-      <section className="container-editorial py-16">
-        <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
-          Exhibitions
-        </h2>
-        <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-          {exhibitions.map((t, i) => (
-            <li
-              key={`${t.year}-${i}`}
-              className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
-            >
-              <span className="font-heading text-2xl text-ochre">{t.year}</span>
-              <span className="self-center font-body text-base text-charcoal/80">
-                {t.text}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {exhibitions.length > 0 && (
+        <section className="container-editorial py-16">
+          <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
+            Exhibitions
+          </h2>
+          <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
+            {exhibitions.map((t, i) => (
+              <li
+                key={`${t.year}-${i}`}
+                className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
+              >
+                <span className="font-heading text-2xl text-ochre">{t.year}</span>
+                <span className="self-center font-body text-base text-charcoal/80">
+                  {t.text}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       {/* Volunteering */}
-      <section className="container-editorial pb-16">
-        <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
-          Volunteering &amp; community
-        </h2>
-        <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-          {volunteering.map((t, i) => (
-            <li
-              key={`${t.year}-${i}`}
-              className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
-            >
-              <span className="font-heading text-2xl text-ochre">{t.year}</span>
-              <span className="self-center font-body text-base text-charcoal/80">
-                {t.text}
-              </span>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {volunteering.length > 0 && (
+        <section className="container-editorial pb-16">
+          <h2 className="mb-8 font-heading text-3xl font-light text-charcoal">
+            Volunteering &amp; community
+          </h2>
+          <ol className="divide-y divide-charcoal/10 border-y border-charcoal/10">
+            {volunteering.map((t, i) => (
+              <li
+                key={`${t.year}-${i}`}
+                className="grid grid-cols-[5rem_1fr] gap-6 py-5 sm:grid-cols-[8rem_1fr]"
+              >
+                <span className="font-heading text-2xl text-ochre">{t.year}</span>
+                <span className="self-center font-body text-base text-charcoal/80">
+                  {t.text}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="bg-pigment text-canvas">

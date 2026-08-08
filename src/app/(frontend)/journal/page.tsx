@@ -5,6 +5,7 @@ import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
 import { getAllPosts } from "@/data/posts";
 import { getSiteContent } from "@/data/settings";
+import { shimmerBlurDataURL } from "@/lib/media";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -56,6 +57,8 @@ export default async function JournalPage() {
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                           priority={i < 3}
+                          placeholder="blur"
+                          blurDataURL={shimmerBlurDataURL}
                           className="object-cover transition-transform duration-700 ease-editorial group-hover:scale-[1.04]"
                         />
                       ) : (

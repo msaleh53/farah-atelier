@@ -35,6 +35,32 @@ export function mediaUrl(
   return media.url ?? ''
 }
 
+/**
+ * A tiny shimmering SVG, base64-encoded as a `blurDataURL`, so images show a
+ * soft loading cue instead of popping in over a flat, unlabeled box while the
+ * real file streams in. Works for any `fill` image regardless of its actual
+ * aspect ratio — the placeholder is stretched to fit.
+ */
+const shimmer = () => `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#EAE5DA" offset="20%" />
+      <stop stop-color="#F2EEE3" offset="50%" />
+      <stop stop-color="#EAE5DA" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" fill="#EAE5DA" />
+  <rect width="100" height="100" fill="url(#g)">
+    <animate attributeName="x" from="-100" to="100" dur="1.2s" repeatCount="indefinite" />
+  </rect>
+</svg>`
+
+const toBase64 = (str: string) =>
+  typeof window === 'undefined' ? Buffer.from(str).toString('base64') : window.btoa(str)
+
+export const shimmerBlurDataURL = `data:image/svg+xml;base64,${toBase64(shimmer())}`
+
 export interface FullImage {
   url: string
   width: number
